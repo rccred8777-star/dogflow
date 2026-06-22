@@ -1,5 +1,5 @@
-import { createServerSupabase, createServiceSupabase } from '@/lib/supabase-server'
 import { redirect } from 'next/navigation'
+import { createServerSupabase } from '@/lib/supabase-server'
 import ProgressView from './ProgressView'
 
 export default async function ProgressoPage() {
@@ -7,16 +7,23 @@ export default async function ProgressoPage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  const db = createServiceSupabase()
-  const [{ data: purchase }, { data: modules }, { data: progress }, { data: pet }] =
-    await Promise.all([
-      db.from('purchases').select('*').eq('user_id', user.id).eq('status', 'active').limit(1).maybeSingle(),
-      db.from('training_modules').select('*').eq('product', 'dogflow_7dias').order('order_index'),
-      db.from('training_progress').select('*').eq('user_id', user.id),
-      db.from('pets').select('*').eq('user_id', user.id).limit(1).maybeSingle(),
-    ])
+  const [modulesRes, streakRes, badgesRes] = await Promise.all([
+    supabase.from('training_modules').select('*, progress:training_progress(status, completed_steps)').order('order_index'),
+    supabase.from('user_streaks').select('*').eq('user_id', user.id).single(),
+    supabase.from('user_badges').select('*').eq('user_id', user.id),
+  ])
 
-  if (!purchase) redirect('/acesso-negado')
+  const modules = (modulesRes.data || []).map((m: any) => ({
+    ...m,
+    progress: Array.isArray(m.progress) ? m.progress[0] : m.progress,
+  }))
 
-  return <ProgressView modules={modules || []} progress={progress || []} pet={pet} purchasedAt={purchase.purchased_at} />
+  return (
+    <ProgressView
+      modules={modules}
+      streak={streakRes.data}
+      badges={badgesRes.data || []}
+      pet={null}
+    />
+  )
 }

@@ -243,3 +243,14 @@ export default function ModuleList({ modules, pet, userPlan }: any) {
     </div>
   )
 }
+
+// Streak component — exportado para uso independente
+export function StreakBadge({ streak }: { streak: number }) {
+  if (streak < 1) return null
+  return (
+    <div className="flex items-center gap-1 bg-orange-50 border border-orange-200 rounded-full px-3 py-1">
+      <span className="text-base">🔥</span>
+      <span className="text-orange-600 font-bold text-sm">{streak} dia{streak > 1 ? 's' : ''}</span>
+    </div>
+  )
+}

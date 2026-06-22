@@ -1,37 +1,35 @@
 'use client'
 
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { PawPrint, BarChart2, Sparkles } from 'lucide-react'
+import { usePathname, useRouter } from 'next/navigation'
+import { Home, Heart, TrendingUp, User } from 'lucide-react'
 
-const LINKS = [
-  { href: '/treinos',   label: 'Treinos',   Icon: PawPrint },
-  { href: '/progresso', label: 'Progresso', Icon: BarChart2 },
-  { href: '/planos',    label: 'Planos',    Icon: Sparkles },
+const TABS = [
+  { href: '/treinos',  icon: Home,        label: 'Início' },
+  { href: '/saude',    icon: Heart,       label: 'Saúde' },
+  { href: '/progresso',icon: TrendingUp,  label: 'Progresso' },
+  { href: '/meu-pet',  icon: User,        label: 'Meu Pet' },
 ]
-
-const HIDDEN_ON = ['/login', '/criar-senha', '/acesso-negado', '/meu-pet', '/treino/']
 
 export default function BottomNav() {
   const pathname = usePathname()
-  if (HIDDEN_ON.some(p => pathname.startsWith(p))) return null
+  const router = useRouter()
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 safe-bottom z-50">
+    <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 safe-bottom z-40">
       <div className="flex">
-        {LINKS.map(({ href, label, Icon }) => {
+        {TABS.map(({ href, icon: Icon, label }) => {
           const active = pathname.startsWith(href)
           return (
-            <Link
+            <button
               key={href}
-              href={href}
-              className={`flex-1 flex flex-col items-center justify-center py-2 gap-0.5 text-xs font-medium transition-colors ${
+              onClick={() => router.push(href)}
+              className={`flex-1 flex flex-col items-center py-2.5 gap-1 transition-colors ${
                 active ? 'text-brand-500' : 'text-gray-400'
               }`}
             >
-              <Icon className={`w-6 h-6 transition-transform ${active ? 'scale-110' : ''}`} />
-              {label}
-            </Link>
+              <Icon className="w-5 h-5" />
+              <span className="text-[10px] font-semibold">{label}</span>
+            </button>
           )
         })}
       </div>
