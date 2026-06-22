@@ -155,9 +155,9 @@
       <p class="preco-antigo">De R$97</p>
       <p class="preco-novo"><sup>R$</sup>27</p>
       <p class="preco-desc">Pagamento único · Acesso imediato no app</p>
-      <a class="cta-btn" href="/landing.html" id="cta-final">
+      <button class="cta-btn" onclick="irParaLanding()" id="cta-final">
         Ver meu plano completo →
-      </a>
+      </button>
       <div class="garantia">
         <div class="shield">🛡️</div>
         <p><strong>Garantia de 7 dias</strong>Se não funcionar, devolvemos 100%. Sem perguntas.</p>
@@ -413,6 +413,9 @@ function mostrarResultado() {
     ]
   }
 
+  window._perfil = ['filhote','punicao','ansiedade','habito'][
+    idade === 0 ? 0 : puniu ? 1 : ansiedade ? 2 : 3]
+  window._diagnostico = perfil
   document.getElementById('resultado-nome').textContent = perfil
   document.getElementById('resultado-intro').textContent = intro
   document.getElementById('diagnostico-box').innerHTML = `
@@ -423,6 +426,14 @@ function mostrarResultado() {
 
   document.getElementById('etapa-resultado').style.display = 'block'
   window.scrollTo({ top: 0, behavior: 'smooth' })
+}
+
+function irParaLanding() {
+  const params = new URLSearchParams({
+    perfil: window._perfil || 'habito',
+    diag: window._diagnostico || 'Hábito incorreto instalado'
+  })
+  window.location.href = '/landing.html?' + params.toString()
 }
 </script>
 </body>

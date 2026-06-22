@@ -540,9 +540,39 @@
     }
 
     footer strong { color: #666; }
+
+    /* ── DIAGNÓSTICO BANNER ──────────────────────── */
+    #diag-banner {
+      display: none;
+      background: linear-gradient(135deg, #1a0a2e, #0f0f1a);
+      border-bottom: 2px solid #7b2fbe;
+      padding: 14px 20px;
+      text-align: center;
+    }
+    #diag-banner .diag-label {
+      font-size: 11px; color: #9966cc; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 4px;
+    }
+    #diag-banner .diag-perfil {
+      font-size: 17px; font-weight: 800; color: #fff; margin-bottom: 2px;
+    }
+    #diag-banner .diag-sub {
+      font-size: 13px; color: #c49ee8;
+    }
+
+    /* CTAs e preço ocultos até vídeo liberar */
+    .price-reveal { transition: opacity 0.6s ease, transform 0.6s ease; }
+    .price-reveal.hidden { opacity: 0; pointer-events: none; transform: translateY(12px); }
   </style>
 </head>
 <body>
+
+<!-- DIAGNÓSTICO BANNER (aparece quando vem do quiz) -->
+<div id="diag-banner">
+  <div class="diag-label">📋 Seu diagnóstico</div>
+  <div class="diag-perfil" id="diag-perfil-txt"></div>
+  <div class="diag-sub">A página abaixo foi personalizada para o seu perfil</div>
+</div>
 
 <!-- TOP BAR -->
 <div class="topbar">
@@ -578,7 +608,7 @@
 
     <p style="font-size:13px;color:#555;margin-bottom:28px;">Sem tempo para assistir? Leia a página completa abaixo.</p>
 
-    <a class="cta-btn" href="https://pay.kiwify.com.br/a6a8NmF" target="_blank">
+    <a class="cta-btn price-reveal hidden" href="https://pay.kiwify.com.br/a6a8NmF" target="_blank">
       Quero resolver o xixi do meu cão em 7 dias — R$27
     </a>
     <p class="cta-sub">Acesso imediato após o pagamento · Garantia de 7 dias</p>
@@ -750,7 +780,7 @@
 
   <!-- CTA intermediário -->
   <div style="margin-top:32px;text-align:center;">
-    <a class="cta-btn" href="https://pay.kiwify.com.br/a6a8NmF" target="_blank">
+    <a class="cta-btn price-reveal hidden" href="https://pay.kiwify.com.br/a6a8NmF" target="_blank">
       Garantir meu acesso por R$27 →
     </a>
     <p class="cta-sub">Checkout seguro · Acesso imediato · Garantia de 7 dias</p>
@@ -885,13 +915,13 @@
 
 <!-- ══════════════════════════════ PREÇO FINAL ══ -->
 <section>
-  <div class="price-box">
+  <div class="price-box price-reveal hidden">
     <div class="section-label">Plano Prático Dog apresenta</div>
     <h2>DogFlow — <em>Xixi no Lugar Certo em 7 Dias</em></h2>
     <div class="price-tag"><small>R$</small>27</div>
     <p class="price-sub">pagamento único · acesso imediato após confirmação</p>
 
-    <a class="cta-btn" href="https://pay.kiwify.com.br/a6a8NmF" target="_blank">
+    <a class="cta-btn price-reveal hidden" href="https://pay.kiwify.com.br/a6a8NmF" target="_blank">
       Quero resolver o xixi do meu cão em 7 dias — R$27
     </a>
     <p class="cta-sub" style="margin-top:12px;">Checkout seguro · Acesso imediato · Garantia de 7 dias</p>
@@ -917,5 +947,53 @@
   });
 </script>
 
+
+<script>
+(function() {
+  const params = new URLSearchParams(window.location.search)
+  const perfil = params.get('perfil')
+  const diag   = params.get('diag')
+
+  // Mostrar banner se veio do quiz
+  if (diag) {
+    const banner = document.getElementById('diag-banner')
+    const txt    = document.getElementById('diag-perfil-txt')
+    if (banner && txt) {
+      txt.textContent = decodeURIComponent(diag)
+      banner.style.display = 'block'
+    }
+  }
+
+  // Esconder preço/CTAs inicialmente (sempre, não só do quiz)
+  // Revelar após 75 segundos ou quando VTurb emitir evento de fim
+  function revelarPreco() {
+    document.querySelectorAll('.price-reveal.hidden').forEach(function(el) {
+      el.classList.remove('hidden')
+    })
+  }
+
+  // Timer de segurança: revela em 75s independente do vídeo
+  var timer = setTimeout(revelarPreco, 75000)
+
+  // VTurb: escutar evento de fim de vídeo
+  window.addEventListener('message', function(e) {
+    try {
+      var data = typeof e.data === 'string' ? JSON.parse(e.data) : e.data
+      if (data && (data.event === 'ended' || data.type === 'ended' || data.action === 'ended')) {
+        clearTimeout(timer)
+        revelarPreco()
+      }
+    } catch(err) {}
+  })
+
+  // Fallback: se VTurb disparar via vturbEvent
+  document.addEventListener('vturbEvent', function(e) {
+    if (e.detail && e.detail.event === 'ended') {
+      clearTimeout(timer)
+      revelarPreco()
+    }
+  })
+})()
+</script>
 </body>
 </html>
