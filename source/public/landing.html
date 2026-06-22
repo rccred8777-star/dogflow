@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DogFlow — Xixi no Lugar Certo em 7 Dias</title>
+
+  <!-- UTMify Pixel -->
+  <script>
+    window.pixelId = "6a3958b0f207f9e332950bd9";
+    var a = document.createElement("script");
+    a.setAttribute("async", "");
+    a.setAttribute("defer", "");
+    a.setAttribute("src", "https://cdn.utmify.com.br/scripts/pixel/pixel.js");
+    document.head.appendChild(a);
+  </script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0d0d0d;
+      --surface: #161616;
+      --border: #2a2a2a;
+      --text: #f0f0f0;
+      --muted: #888;
+      --accent: #f5a623;
+      --accent-dark: #d4891a;
+      --green: #27ae60;
+      --red: #e74c3c;
+      --max: 640px;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', Arial, sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* ── TOP BAR ─────────────────────────────────── */
+    .topbar {
+      background: #111;
+      border-bottom: 1px solid var(--border);
+      padding: 10px 20px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .topbar span { color: var(--accent); font-weight: 600; }
+
+    /* ── HERO ────────────────────────────────────── */
+    .hero {
+      background: linear-gradient(180deg, #111 0%, #0d0d0d 100%);
+      padding: 48px 20px 40px;
+      text-align: center;
+    }
+
+    .badge {
+      display: inline-block;
+      background: rgba(245,166,35,0.12);
+      border: 1px solid rgba(245,166,35,0.3);
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      border-radius: 20px;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-size: clamp(24px, 6vw, 36px);
+      font-weight: 800;
+      line-height: 1.2;
+      color: #fff;
+      margin-bottom: 16px;
+    }
+
+    h1 em {
+      font-style: normal;
+      color: var(--accent);
+    }
+
+    .subheadline {
+      font-size: 16px;
+      color: #ccc;
+      max-width: 480px;
+      margin: 0 auto 32px;
+      line-height: 1.7;
+    }
+
+
+    /* ── CTA BUTTON ──────────────────────────────── */
+    .cta-btn {
+      display: block;
+      width: 100%;
+      max-width: 480px;
+      margin: 0 auto;
+      background: var(--accent);
+      color: #000;
+      font-size: 18px;
+      font-weight: 800;
+      text-align: center;
+      padding: 18px 24px;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.1s;
+      line-height: 1.3;
+    }
+
+    .cta-btn:hover { background: var(--accent-dark); transform: translateY(-1px); }
+    .cta-btn:active { transform: translateY(0); }
+
+    .cta-sub {
+      text-align: center;
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 10px;
+    }
+
+    .trust-badges {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+
+    .trust-badges span {
+      font-size: 13px;
+      color: #aaa;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    /* ── SECTIONS ────────────────────────────────── */
+    section {
+      padding: 56px 20px;
+      max-width: var(--max);
+      margin: 0 auto;
+    }
+
+    h2 {
+      font-size: clamp(20px, 5vw, 28px);
+      font-weight: 800;
+      margin-bottom: 20px;
+      line-height: 1.3;
+    }
+
+    h2 em {
+      font-style: normal;
+      color: var(--accent);
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 0;
+    }
+
+    /* ── DOR ─────────────────────────────────────── */
+    .pain-list {
+      list-style: none;
+      margin: 24px 0;
+    }
+
+    .pain-list li {
+      position: relative;
+      padding: 14px 16px 14px 48px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 10px;
+      font-size: 15px;
+      color: #ddd;
+      font-style: italic;
+    }
+
+    .pain-list li::before {
+      content: '"';
+      position: absolute;
+      left: 16px;
+      top: 14px;
+      color: var(--accent);
+      font-size: 22px;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .tried-list {
+      list-style: none;
+      margin: 20px 0;
+    }
+
+    .tried-list li {
+      padding: 8px 0 8px 28px;
+      position: relative;
+      color: #bbb;
+      font-size: 15px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tried-list li:last-child { border-bottom: none; }
+
+    .tried-list li::before {
+      content: '✗';
+      position: absolute;
+      left: 0;
+      color: var(--red);
+      font-weight: 700;
+    }
+
+    .callout {
+      background: rgba(245,166,35,0.08);
+      border-left: 3px solid var(--accent);
+      padding: 16px 20px;
+      border-radius: 0 8px 8px 0;
+      margin-top: 24px;
+      font-size: 15px;
+      color: #ddd;
+    }
+
+    .callout strong { color: var(--accent); }
+
+    /* ── POR QUE ACONTECE ────────────────────────── */
+    .mechanism-list {
+      list-style: none;
+      margin: 24px 0;
+    }
+
+    .mechanism-list li {
+      display: flex;
+      gap: 14px;
+      margin-bottom: 16px;
+      font-size: 15px;
+      color: #ccc;
+    }
+
+    .mechanism-list li .icon {
+      flex-shrink: 0;
+      width: 36px;
+      height: 36px;
+      background: rgba(245,166,35,0.12);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    /* ── PROGRAMA ────────────────────────────────── */
+    .days-grid {
+      margin-top: 24px;
+    }
+
+    .day-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px 20px;
+      margin-bottom: 10px;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+
+    .day-num {
+      flex-shrink: 0;
+      width: 40px;
+      height: 40px;
+      background: var(--accent);
+      color: #000;
+      font-weight: 800;
+      font-size: 14px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .day-content h3 {
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+
+    .day-content p {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .day-meta {
+      font-size: 12px;
+      color: #555;
+      margin-top: 16px;
+      text-align: center;
+    }
+
+    /* ── O QUE ESTÁ INCLUÍDO ─────────────────────── */
+    .includes-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 16px;
+    }
+
+    .includes-card h3 {
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 14px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .includes-list {
+      list-style: none;
+    }
+
+    .includes-list li {
+      padding: 7px 0 7px 24px;
+      position: relative;
+      font-size: 14px;
+      color: #bbb;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .includes-list li:last-child { border-bottom: none; }
+
+    .includes-list li::before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      color: var(--green);
+      font-weight: 700;
+    }
+
+    .bonus-tag {
+      display: inline-block;
+      background: rgba(39,174,96,0.1);
+      border: 1px solid rgba(39,174,96,0.3);
+      color: var(--green);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+
+    /* ── PARA QUEM É ─────────────────────────────── */
+    .for-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    @media (max-width: 480px) {
+      .for-grid { grid-template-columns: 1fr; }
+    }
+
+    .for-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+    }
+
+    .for-card h3 {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 12px;
+    }
+
+    .for-card.yes h3 { color: var(--green); }
+    .for-card.no h3 { color: var(--red); }
+
+    .for-card ul { list-style: none; }
+
+    .for-card ul li {
+      font-size: 13px;
+      color: #bbb;
+      padding: 5px 0 5px 20px;
+      position: relative;
+      line-height: 1.4;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+
+    .for-card ul li:last-child { border-bottom: none; }
+    .for-card.yes ul li::before { content: '✓'; position: absolute; left: 0; color: var(--green); font-weight: 700; }
+    .for-card.no ul li::before { content: '✗'; position: absolute; left: 0; color: var(--red); font-weight: 700; }
+
+    /* ── GARANTIA ────────────────────────────────── */
+    .guarantee-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 32px 24px;
+      text-align: center;
+    }
+
+    .guarantee-icon {
+      font-size: 56px;
+      margin-bottom: 16px;
+    }
+
+    .guarantee-box h2 {
+      margin-bottom: 12px;
+    }
+
+    .guarantee-box p {
+      font-size: 15px;
+      color: #bbb;
+      line-height: 1.7;
+      margin-bottom: 12px;
+    }
+
+    .guarantee-legal {
+      font-size: 12px;
+      color: #555;
+    }
+
+    /* ── FAQ ─────────────────────────────────────── */
+    .faq-item {
+      border-bottom: 1px solid var(--border);
+    }
+
+    .faq-q {
+      width: 100%;
+      background: none;
+      border: none;
+      color: #fff;
+      text-align: left;
+      font-size: 15px;
+      font-weight: 600;
+      padding: 18px 32px 18px 0;
+      cursor: pointer;
+      position: relative;
+      line-height: 1.4;
+    }
+
+    .faq-q::after {
+      content: '+';
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 20px;
+      color: var(--accent);
+      transition: transform 0.2s;
+    }
+
+    .faq-item.open .faq-q::after {
+      transform: translateY(-50%) rotate(45deg);
+    }
+
+    .faq-a {
+      font-size: 14px;
+      color: #aaa;
+      line-height: 1.7;
+      padding-bottom: 16px;
+      display: none;
+    }
+
+    .faq-item.open .faq-a { display: block; }
+
+    /* ── PREÇO FINAL ─────────────────────────────── */
+    .price-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 32px 24px;
+      text-align: center;
+    }
+
+    .price-box h2 { margin-bottom: 8px; }
+
+    .price-tag {
+      font-size: 48px;
+      font-weight: 900;
+      color: var(--accent);
+      line-height: 1;
+      margin: 16px 0;
+    }
+
+    .price-tag small {
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .price-sub {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 24px;
+    }
+
+    /* ── FOOTER ──────────────────────────────────── */
+    footer {
+      background: #0a0a0a;
+      border-top: 1px solid var(--border);
+      padding: 32px 20px;
+      text-align: center;
+    }
+
+    footer p {
+      font-size: 12px;
+      color: #444;
+      line-height: 1.7;
+      max-width: 500px;
+      margin: 0 auto 8px;
+    }
+
+    footer strong { color: #666; }
+  </style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <span>🐾 DogFlow</span> — Oferta por tempo limitado · R$27 pagamento único
+</div>
+
+<!-- ═══════════════════════════════════ HERO ══ -->
+<div class="hero">
+  <div class="container">
+    <div class="badge">🐶 Método de Adestramento em Casa</div>
+
+    <!--
+      HEADLINE A/B — 4 versões para teste. Ativar uma por vez.
+      ATIVA: Opção A (ruminação direta — maior CTR estimado)
+      OPÇÃO B: Por que seu cachorro faz xixi do lado do tapete em vez de em cima?
+      OPÇÃO C: Quase dei meu cachorro embora. Então descobri o que estava errado.
+      OPÇÃO D: Quanto mais você briga com o cão pelo xixi, pior fica.
+    -->
+    <h1>Não aguento mais limpar <em>xixi do sofá.</em></h1>
+
+    <p class="subheadline">Você não quer só que ele pare. Você quer <strong style="color:#fff;">voltar a gostar do seu cachorro</strong> — sem culpa, sem raiva. O DogFlow resolve isso em 7 dias.</p>
+
+    <!-- VSL -->
+    <div style="max-width:640px;margin:0 auto 32px;border-radius:12px;overflow:hidden;">
+      <vturb-smartplayer id="vid-6a30530b1ead4fb7a53cdaf0" style="display: block; margin: 0 auto; width: 100%;"></vturb-smartplayer>
+      <script type="text/javascript">
+        var s=document.createElement("script");
+        s.src="https://scripts.converteai.net/a8afe151-e15b-4b4c-b570-59fdd67b5456/players/6a30530b1ead4fb7a53cdaf0/v4/player.js";
+        s.async=!0;
+        document.head.appendChild(s);
+      </script>
+    </div>
+
+    <p style="font-size:13px;color:#555;margin-bottom:28px;">Sem tempo para assistir? Leia a página completa abaixo.</p>
+
+    <a class="cta-btn" href="https://pay.kiwify.com.br/a6a8NmF" target="_blank">
+      Quero resolver o xixi do meu cão em 7 dias — R$27
+    </a>
+    <p class="cta-sub">Acesso imediato após o pagamento · Garantia de 7 dias</p>
+
+    <div class="trust-badges">
+      <span>🔒 Checkout seguro</span>
+      <span>🏷️ R$27 pagamento único</span>
+      <span>↩️ Garantia 7 dias</span>
+    </div>
+  </div>
+</div>
+
+<hr class="divider" />
+
+<!-- ══════════════════════════════════ DOR ══ -->
+<section>
+  <div class="section-label">Você conhece essa sensação</div>
+  <h2>Acordar todo dia sem saber o que vai <em>encontrar no chão</em></h2>
+
+  <ul class="pain-list">
+    <li>Ele tem o tapete bem ali. E faz do lado. Todo dia.</li>
+    <li>Já tentei tapete, spray atrativo, jornal, bronca... nada funciona.</li>
+    <li>A visita chega e eu já sei que o cheiro está lá. Fico com vergonha.</li>
+    <li>Meu marido quer dar o cachorro embora. Eu não consigo.</li>
+  </ul>
+
+  <p style="color:#ccc;font-size:15px;margin-bottom:16px;">Se você se identificou com alguma dessas situações, saiba que você <strong>não errou</strong> — e o seu cão não é teimoso, vingativo ou burro.</p>
+
+  <ul class="tried-list">
+    <li>Tentou tapete higiênico em vários cantos e o cão ignorou</li>
+    <li>Comprou spray atrativo e não resolveu</li>
+    <li>Levou o cão ao tapete mil vezes sem resultado consistente</li>
+    <li>Disse "não!" com voz firme e ele continuou do mesmo jeito</li>
+    <li>Pesquisou no YouTube, leu artigo atrás de artigo e ainda está no mesmo lugar</li>
+  </ul>
+
+  <div class="callout">
+    <strong>Você não errou.</strong> Você só não teve acesso ao método certo ainda.
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- ══════════════════════════════ POR QUE ══ -->
+<section>
+  <div class="section-label">Por que acontece</div>
+  <h2>Não é birra. Não é vingança. <em>É rotina confusa.</em></h2>
+
+  <p style="color:#bbb;font-size:15px;margin-bottom:24px;">Cachorros não aprendem onde fazer xixi por punição. Eles aprendem por <strong>associação repetida</strong> e <strong>reforço positivo no momento exato</strong>.</p>
+
+  <ul class="mechanism-list">
+    <li>
+      <div class="icon">📍</div>
+      <div><strong style="color:#fff;">Local fixo</strong> — sempre o mesmo lugar, sem variação</div>
+    </li>
+    <li>
+      <div class="icon">⏰</div>
+      <div><strong style="color:#fff;">Horário fixo</strong> — rotina previsível para o cão</div>
+    </li>
+    <li>
+      <div class="icon">⚡</div>
+      <div><strong style="color:#fff;">Reforço positivo imediato</strong> — no segundo exato em que acerta</div>
+    </li>
+  </ul>
+
+  <div class="callout">
+    Isso é o que os adestradores chamam de <strong>rotina de banheiro</strong>. E quando aplicada corretamente, funciona nos primeiros dias — em qualquer cão, filhote ou adulto, com quintal ou em apartamento.
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- ══════════════════════════════ PROGRAMA ══ -->
+<section>
+  <div class="section-label">O Programa</div>
+  <h2><em>DogFlow</em> — Xixi no Lugar Certo em 7 Dias</h2>
+  <p style="color:#bbb;font-size:15px;margin-bottom:4px;">Um plano diário, simples, com checklist — para seguir <strong>10 minutos por dia</strong> durante 7 dias.</p>
+
+  <div class="days-grid">
+    <div class="day-card">
+      <div class="day-num">D1</div>
+      <div class="day-content">
+        <h3>Preparar o ambiente e o horário certo</h3>
+        <p>Define o local fixo, monta a rotina de horários e prepara o espaço do jeito que facilita o acerto.</p>
+      </div>
+    </div>
+    <div class="day-card">
+      <div class="day-num">D2</div>
+      <div class="day-content">
+        <h3>O reforço positivo correto</h3>
+        <p>Como reagir no momento exato — e o erro de timing que quase todo dono comete sem saber.</p>
+      </div>
+    </div>
+    <div class="day-card">
+      <div class="day-num">D3</div>
+      <div class="day-content">
+        <h3>O que fazer quando ele erra</h3>
+        <p>A resposta certa para o acidente — e por que a punição sempre piora o resultado.</p>
+      </div>
+    </div>
+    <div class="day-card">
+      <div class="day-num">D4</div>
+      <div class="day-content">
+        <h3>Solidificar a rotina de horários</h3>
+        <p>Ajuste fino na frequência e nos horários para encaixar na sua rotina real.</p>
+      </div>
+    </div>
+    <div class="day-card">
+      <div class="day-num">D5</div>
+      <div class="day-content">
+        <h3>Como lidar com regressão</h3>
+        <p>Vai ter um dia ruim — todos os cães têm. Aqui você aprende o que fazer sem perder o progresso.</p>
+      </div>
+    </div>
+    <div class="day-card">
+      <div class="day-num">D6</div>
+      <div class="day-content">
+        <h3>Refinamento e adaptação</h3>
+        <p>Adapta o método para a sua rotina específica — apartamento, casa, passeios, tapete ou sanitário.</p>
+      </div>
+    </div>
+    <div class="day-card">
+      <div class="day-num">D7</div>
+      <div class="day-content">
+        <h3>Revisão + como manter para sempre</h3>
+        <p>Consolida o hábito e te dá o plano de manutenção para não precisar mais do programa.</p>
+      </div>
+    </div>
+  </div>
+
+  <p class="day-meta">Cada dia tem: objetivo · instrução · erro comum · checklist · tarefa prática</p>
+</section>
+
+<hr class="divider" />
+
+<!-- ══════════════════════════════ INCLUÍDO ══ -->
+<section>
+  <div class="section-label">O que está incluído</div>
+  <h2>Tudo o que você precisa para <em>aplicar em casa</em></h2>
+
+  <div class="includes-card">
+    <h3>🐾 Programa DogFlow — 7 Dias</h3>
+    <ul class="includes-list">
+      <li>Treino guiado diário — 10 minutos por dia</li>
+      <li>Checklist diário para não pular nenhum passo</li>
+      <li>Erro comum de cada dia e como evitar</li>
+      <li>Tarefa prática para aplicar ao longo do dia</li>
+      <li>Acesso pelo celular, um dia de cada vez</li>
+    </ul>
+  </div>
+
+  <div class="includes-card">
+    <h3>🎁 Bônus inclusos <span class="bonus-tag">Grátis</span></h3>
+    <ul class="includes-list">
+      <li>🏠 Guia: Adaptar para apartamento — tapete, sanitário ou passeio programado</li>
+      <li>🐕 Guia: Cão adulto — método adaptado para hábito já criado</li>
+      <li>🔄 O que fazer quando regride — guia específico para o dia ruim</li>
+      <li>📋 Checklist para colar na geladeira — resumo do método</li>
+      <li>⚠️ Lista dos 7 erros que sabotam o método — evite desde o Dia 1</li>
+    </ul>
+  </div>
+
+  <div class="includes-card" style="border-color:rgba(245,166,35,0.3);">
+    <h3>➕ Também disponível no checkout</h3>
+    <ul class="includes-list">
+      <li><strong style="color:#fff;">Pare de Destruir a Casa</strong> — roer objetos, pular em visitas e latido excessivo. Mesmo método de reforço positivo.</li>
+    </ul>
+  </div>
+
+  <!-- CTA intermediário -->
+  <div style="margin-top:32px;text-align:center;">
+    <a class="cta-btn" href="https://pay.kiwify.com.br/a6a8NmF" target="_blank">
+      Garantir meu acesso por R$27 →
+    </a>
+    <p class="cta-sub">Checkout seguro · Acesso imediato · Garantia de 7 dias</p>
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- ══════════════════════════════ PARA QUEM ══ -->
+<section>
+  <div class="section-label">Qualificação</div>
+  <h2>Para quem é — e para quem <em>não é</em></h2>
+
+  <div class="for-grid">
+    <div class="for-card yes">
+      <h3>✓ Para você se</h3>
+      <ul>
+        <li>Dono de filhote que quer começar certo</li>
+        <li>Cão adulto com hábito errado criado</li>
+        <li>Mora em apartamento (tapete ou passeio)</li>
+        <li>Já tentou de tudo sem resultado</li>
+        <li>Quer resolver sem punição</li>
+        <li>Tem 10 minutos por dia</li>
+      </ul>
+    </div>
+    <div class="for-card no">
+      <h3>✗ Não é para você se</h3>
+      <ul>
+        <li>Quer solução mágica da noite para o dia</li>
+        <li>Cão com problema de saúde urinária</li>
+        <li>Casos de agressividade grave</li>
+        <li>Não consegue dedicar 10 min/dia</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- ══════════════════════════════ GARANTIA ══ -->
+<section>
+  <div class="guarantee-box">
+    <div class="guarantee-icon">🛡️</div>
+    <div class="section-label">Garantia</div>
+    <h2>7 dias de garantia legal</h2>
+    <p>Você tem 7 dias corridos para testar o DogFlow. Se por qualquer motivo não gostar, basta pedir o reembolso por e-mail dentro desse prazo. <strong style="color:#fff;">Você recebe o valor de volta integralmente, sem perguntas.</strong></p>
+    <p class="guarantee-legal">É seu direito como consumidor (CDC Art. 49) — e a gente respeita isso.</p>
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- ══════════════════════════════ FAQ ══ -->
+<section>
+  <div class="section-label">Perguntas frequentes</div>
+  <h2>Dúvidas comuns</h2>
+
+  <div class="faq-item">
+    <button class="faq-q">O programa funciona para filhote?</button>
+    <div class="faq-a">Sim. Filhote é o melhor momento para começar — os primeiros dias definem o hábito para a vida toda. O DogFlow foi criado pensando nesse perfil.</div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-q">Funciona para cão adulto que já tem o hábito errado criado?</button>
+    <div class="faq-a">Sim. Cão adulto leva um pouco mais de tempo para desaprender o hábito antigo, mas o método é o mesmo. O programa tem uma seção específica para cão adulto com ajustes de expectativa e tempo.</div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-q">Funciona para quem mora em apartamento sem quintal?</button>
+    <div class="faq-a">Sim. O método foi construído pensando em apartamento. Cobre tapete higiênico, sanitário higiênico plástico e rotina de passeio programado — você escolhe o que faz mais sentido para a sua realidade.</div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-q">E se o problema do xixi for uma infecção urinária?</button>
+    <div class="faq-a">Se o seu cão apresenta mudança súbita no padrão de xixi, urina com sangue, dificuldade para urinar, xixi com dor ou cheiro muito forte, consulte um veterinário antes de iniciar qualquer programa comportamental. Esses podem ser sinais de problema de saúde.</div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-q">Precisa de punição, grito ou bater?</button>
+    <div class="faq-a">Não. Nunca. O método do DogFlow é 100% baseado em reforço positivo, rotina e consistência. Punição não ensina onde fazer — só cria medo e piora o problema.</div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-q">Em quanto tempo verei resultado?</button>
+    <div class="faq-a">A maioria dos donos começa a ver diferença entre o Dia 3 e o Dia 5. O objetivo do programa é criar o início da rotina em 7 dias — a consolidação total do hábito pode levar até 3 semanas de manutenção após o programa.</div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-q">O acesso fica disponível para sempre?</button>
+    <div class="faq-a">Sim. Após os 7 dias do programa, você mantém acesso ao conteúdo para revisitar sempre que precisar — inclusive se precisar aplicar o método com um novo cão no futuro.</div>
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- ══════════════════════════ ANCORAGEM DE PREÇO ══ -->
+<section>
+  <div class="section-label">Antes de você decidir</div>
+  <h2>Quanto você já <em>gastou</em> tentando resolver isso?</h2>
+
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:24px;">
+    <table style="width:100%;border-collapse:collapse;font-size:15px;">
+      <tr style="border-bottom:1px solid var(--border);">
+        <td style="padding:12px 8px;color:#bbb;">Tapete higiênico (3/semana)</td>
+        <td style="padding:12px 8px;text-align:right;color:#e74c3c;font-weight:700;">R$150/mês</td>
+      </tr>
+      <tr style="border-bottom:1px solid var(--border);">
+        <td style="padding:12px 8px;color:#bbb;">Produto de limpeza de xixi</td>
+        <td style="padding:12px 8px;text-align:right;color:#e74c3c;font-weight:700;">R$40/mês</td>
+      </tr>
+      <tr style="border-bottom:1px solid var(--border);">
+        <td style="padding:12px 8px;color:#bbb;">Spray atrativo + outros produtos</td>
+        <td style="padding:12px 8px;text-align:right;color:#e74c3c;font-weight:700;">R$60 (perdido)</td>
+      </tr>
+      <tr style="border-bottom:1px solid var(--border);">
+        <td style="padding:12px 8px;color:#bbb;">Adestrador presencial (1 sessão)</td>
+        <td style="padding:12px 8px;text-align:right;color:#e74c3c;font-weight:700;">R$150–300</td>
+      </tr>
+      <tr>
+        <td style="padding:14px 8px;color:#fff;font-weight:700;">Em 6 meses sem resolver</td>
+        <td style="padding:14px 8px;text-align:right;color:#e74c3c;font-weight:800;font-size:18px;">+R$1.200</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="callout" style="border-color:rgba(245,166,35,0.4);background:rgba(245,166,35,0.08);">
+    O DogFlow resolve em 7 dias por <strong style="color:var(--accent);font-size:18px;">R$27</strong> — pagamento único, sem mensalidade, com garantia de 7 dias.
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- ══════════════════════════════ PREÇO FINAL ══ -->
+<section>
+  <div class="price-box">
+    <div class="section-label">Plano Prático Dog apresenta</div>
+    <h2>DogFlow — <em>Xixi no Lugar Certo em 7 Dias</em></h2>
+    <div class="price-tag"><small>R$</small>27</div>
+    <p class="price-sub">pagamento único · acesso imediato após confirmação</p>
+
+    <a class="cta-btn" href="https://pay.kiwify.com.br/a6a8NmF" target="_blank">
+      Quero resolver o xixi do meu cão em 7 dias — R$27
+    </a>
+    <p class="cta-sub" style="margin-top:12px;">Checkout seguro · Acesso imediato · Garantia de 7 dias</p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════ FOOTER ══ -->
+<footer>
+  <p><strong>Plano Prático Dog</strong> · Produto digital de manejo comportamental.</p>
+  <p>Este programa é de manejo comportamental com reforço positivo. Não substitui avaliação veterinária ou adestrador profissional. Se seu cão apresentar mudança brusca no padrão de xixi, dor, sangue na urina, retenção urinária ou qualquer sintoma físico, consulte um veterinário antes de iniciar qualquer programa comportamental.</p>
+  <p>Resultados podem variar. Baseado em experiências reais de aplicação do método.</p>
+</footer>
+
+<script>
+  // FAQ accordion
+  document.querySelectorAll('.faq-q').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const item = btn.closest('.faq-item');
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
+    });
+  });
+</script>
+
+</body>
+</html>

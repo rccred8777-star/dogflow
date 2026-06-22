@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Oferta Especial — Cão Calmo | DogFlow</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #0d0d0d;
+      --surface: #1a1a1a;
+      --border:  #2a2a2a;
+      --accent:  #f5a623;
+      --purple:  #7b2fbe;
+      --green:   #2ecc71;
+      --red:     #e74c3c;
+      --text:    #e0e0e0;
+      --muted:   #888;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.6;
+    }
+
+    /* ── TOPO ── */
+    .topbar {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 20px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .topbar strong { color: var(--green); }
+
+    /* ── HERO ── */
+    .hero {
+      background: linear-gradient(135deg, #1a0a2e 0%, #0d0d0d 60%);
+      border-bottom: 1px solid var(--border);
+      padding: 56px 20px 48px;
+      text-align: center;
+    }
+
+    .badge {
+      display: inline-block;
+      background: rgba(245,166,35,0.15);
+      border: 1px solid rgba(245,166,35,0.4);
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      padding: 5px 14px;
+      border-radius: 20px;
+      margin-bottom: 24px;
+    }
+
+    .hero h1 {
+      font-size: clamp(26px, 5vw, 42px);
+      font-weight: 800;
+      line-height: 1.2;
+      max-width: 720px;
+      margin: 0 auto 16px;
+    }
+    .hero h1 em { color: var(--accent); font-style: normal; }
+
+    .hero .sub {
+      font-size: clamp(15px, 2.5vw, 18px);
+      color: #bbb;
+      max-width: 580px;
+      margin: 0 auto 32px;
+    }
+
+    .paw { font-size: 36px; margin-bottom: 16px; display: block; }
+
+    /* ── SEÇÕES ── */
+    .section { max-width: 680px; margin: 0 auto; padding: 48px 20px; }
+    .section + .section { border-top: 1px solid var(--border); }
+
+    h2 {
+      font-size: clamp(20px, 3.5vw, 28px);
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+    h2 em { color: var(--accent); font-style: normal; }
+
+    p { color: #bbb; font-size: 16px; margin-bottom: 14px; }
+    p strong { color: #fff; }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--purple);
+      margin-bottom: 10px;
+    }
+
+    /* ── PROBLEMA ── */
+    .scenario {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--red);
+      border-radius: 10px;
+      padding: 20px 22px;
+      margin-bottom: 14px;
+      font-size: 15px;
+      color: #ccc;
+    }
+    .scenario::before {
+      content: "😰 ";
+    }
+
+    /* ── ENTREGÁVEIS ── */
+    .deliverable {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px 20px;
+      margin-bottom: 12px;
+    }
+    .deliverable .icon {
+      font-size: 24px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .deliverable .info strong {
+      display: block;
+      color: #fff;
+      font-size: 15px;
+      margin-bottom: 4px;
+    }
+    .deliverable .info span {
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    /* ── CALLOUT ── */
+    .callout {
+      background: rgba(123,47,190,0.1);
+      border: 1px solid rgba(123,47,190,0.35);
+      border-radius: 10px;
+      padding: 20px 22px;
+      font-size: 15px;
+      color: #ccc;
+      margin: 24px 0;
+    }
+    .callout strong { color: #fff; }
+
+    /* ── PREÇO ── */
+    .price-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 32px 24px;
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .price-old {
+      font-size: 15px;
+      color: var(--muted);
+      text-decoration: line-through;
+      margin-bottom: 6px;
+    }
+    .price-new {
+      font-size: 48px;
+      font-weight: 900;
+      color: var(--green);
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    .price-new span { font-size: 22px; vertical-align: super; }
+    .price-desc {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 0;
+    }
+
+    /* ── BOTÃO KIWIFY (override) ── */
+    #kiwify-upsell-gmD7yDF {
+      text-align: center !important;
+    }
+    #kiwify-upsell-trigger-gmD7yDF {
+      display: block !important;
+      width: 100% !important;
+      max-width: 520px !important;
+      margin: 0 auto !important;
+      background: linear-gradient(135deg, #f5a623, #e8920f) !important;
+      border: none !important;
+      border-radius: 10px !important;
+      padding: 20px 24px !important;
+      font-size: 19px !important;
+      font-weight: 800 !important;
+      color: #000 !important;
+      cursor: pointer !important;
+      letter-spacing: -0.3px !important;
+      box-shadow: 0 4px 24px rgba(245,166,35,0.35) !important;
+      transition: transform 0.15s, box-shadow 0.15s !important;
+    }
+    #kiwify-upsell-trigger-gmD7yDF:hover {
+      transform: translateY(-2px) !important;
+      box-shadow: 0 8px 32px rgba(245,166,35,0.45) !important;
+    }
+    #kiwify-upsell-cancel-trigger-gmD7yDF {
+      color: var(--muted) !important;
+      font-size: 13px !important;
+      text-decoration: underline !important;
+      margin-top: 14px !important;
+    }
+
+    .cta-sub {
+      font-size: 13px;
+      color: var(--muted);
+      text-align: center;
+      margin-top: 12px;
+    }
+
+    /* ── GARANTIA ── */
+    .guarantee {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: rgba(46,204,113,0.08);
+      border: 1px solid rgba(46,204,113,0.25);
+      border-radius: 10px;
+      padding: 18px 20px;
+    }
+    .guarantee .shield { font-size: 32px; flex-shrink: 0; }
+    .guarantee p { margin: 0; font-size: 14px; color: #bbb; }
+    .guarantee p strong { color: var(--green); display: block; margin-bottom: 2px; }
+
+    /* ── RODAPÉ ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 24px 20px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+
+<!-- TOPO -->
+<div class="topbar">
+  ✅ Pagamento confirmado! <strong>Seu DogFlow está liberado.</strong> Antes de acessar, veja esta oferta exclusiva.
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <span class="paw">🐾</span>
+  <div class="badge">Oferta exclusiva pós-compra · Apenas R$47</div>
+  <h1>Seu cão sabe que você vai sair.<br/><em>E entra em colapso.</em></h1>
+  <p class="sub">Xixi na sala. Latido até o vizinho bater na porta. Sofá destruído. Isso não é birra — é ansiedade. E tem solução.</p>
+</div>
+
+<!-- O PROBLEMA -->
+<div class="section">
+  <div class="section-label">O problema real</div>
+  <h2>O DogFlow resolve o xixi.<br/>Mas e <em>isso</em> aqui?</h2>
+
+  <div class="scenario">Você calça o sapato. Ele já começa a choramingar.</div>
+  <div class="scenario">Você fecha a porta. Ele late por 40 minutos seguidos.</div>
+  <div class="scenario">Você chega em casa e encontra o tapete destruído.</div>
+  <div class="scenario">Vizinho reclamou pela terceira vez essa semana.</div>
+
+  <p style="margin-top:20px;">Isso é <strong>ansiedade de separação</strong> — e é a causa invisível por trás de boa parte dos problemas de comportamento. Não é mau comportamento. É medo. E medo tem protocolo.</p>
+</div>
+
+<!-- ENTREGÁVEIS -->
+<div class="section">
+  <div class="section-label">O que você recebe</div>
+  <h2>Protocolo <em>Cão Calmo</em></h2>
+
+  <div class="deliverable">
+    <div class="icon">📋</div>
+    <div class="info">
+      <strong>Protocolo de Dessensibilização — 7 dias</strong>
+      <span>Treina o cão a ficar sozinho sem colapso, de forma gradual e sem punição. Dia a dia, passo a passo.</span>
+    </div>
+  </div>
+
+  <div class="deliverable">
+    <div class="icon">🚪</div>
+    <div class="info">
+      <strong>Rotina pré-saída e pós-chegada</strong>
+      <span>Os rituais exatos que ensinam ao cão que sua ausência é normal e segura — começando antes de você sair.</span>
+    </div>
+  </div>
+
+  <div class="deliverable">
+    <div class="icon">🗺️</div>
+    <div class="info">
+      <strong>Mapa de gatilhos individuais</strong>
+      <span>Identifica o que dispara a ansiedade no SEU cão especificamente: sapato, chave, bolsa, hora do dia.</span>
+    </div>
+  </div>
+
+  <div class="deliverable">
+    <div class="icon">🧩</div>
+    <div class="info">
+      <strong>Enriquecimento ambiental</strong>
+      <span>Como ocupar a mente do cão enquanto você não está em casa — sem precisar comprar nada caro.</span>
+    </div>
+  </div>
+
+  <div class="callout">
+    <strong>Acesso imediato</strong> junto com o DogFlow. Tudo na mesma área de membros. PDF + checklist semanal para acompanhar a evolução do seu cão dia a dia.
+  </div>
+</div>
+
+<!-- OFERTA -->
+<div class="section">
+  <div class="section-label">Sua oferta especial</div>
+  <h2>Apenas para quem comprou o <em>DogFlow agora</em></h2>
+
+  <div class="price-box">
+    <p class="price-old">De R$97</p>
+    <div class="price-new"><span>R$</span>47</div>
+    <p class="price-desc">Pagamento único · Sem mensalidade</p>
+  </div>
+
+  <!-- SNIPPET KIWIFY -->
+  <div style="text-align:center" id="kiwify-upsell-gmD7yDF" data-upsell-url="https://pay.kiwify.com.br/TDTPcu6" data-downsell-url="https://pay.kiwify.com.br/TDTPcu6">
+    <button id="kiwify-upsell-trigger-gmD7yDF" style="background-color:#5383ad;padding:12px 16px;cursor:pointer;color:#FFFFFF;font-weight:600;border-radius:4px;border:1px solid #5383ad;font-size:20px;">Sim! Quero o Protocolo Cão Calmo por R$47</button>
+    <div id="kiwify-upsell-cancel-trigger-gmD7yDF" style="margin-top:1rem;cursor:pointer;font-size:16px;text-decoration:underline;font-family:sans-serif;">Não, prefiro arriscar — vou continuar sem o protocolo</div>
+  </div>
+  <script src="https://snippets.kiwify.com/upsell/upsell.min.js"></script>
+
+  <p class="cta-sub">Esta oferta aparece apenas uma vez · Não será exibida novamente</p>
+
+  <div class="guarantee" style="margin-top:28px;">
+    <div class="shield">🛡️</div>
+    <p><strong>Garantia de 7 dias</strong>Se não gostar por qualquer motivo, devolvemos 100% do valor. Sem perguntas.</p>
+  </div>
+</div>
+
+<!-- RODAPÉ -->
+<footer>
+  🐾 DogFlow · Todos os direitos reservados<br/>
+  Esta oferta é exclusiva para compradores do DogFlow e aparece apenas uma vez.
+</footer>
+
+</body>
+</html>
