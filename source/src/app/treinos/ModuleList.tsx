@@ -19,12 +19,14 @@ const PLAN_CONFIGS: Record<string, { label: string; gradient: string; icon: stri
   dogflow_basico:   { label: 'Básico',   gradient: 'from-slate-500 to-slate-700',   icon: '📚', photo: '/dogs/day2.jpg' },
   dogflow_premium:  { label: 'Premium',  gradient: 'from-brand-500 to-brand-700',   icon: '⭐', photo: '/dogs/day5.jpg' },
   dogflow_pro:      { label: 'Pro',      gradient: 'from-amber-500 to-amber-700',   icon: '👑', photo: '/dogs/day7.jpg' },
+  dogflow_caocalmo: { label: 'Cão Calmo', gradient: 'from-teal-500 to-teal-700',    icon: '😌', photo: '/dogs/day6.jpg' },
 }
 
 const PLAN_LOCK_LABELS: Record<string, string> = {
   basico:   '🔒 Disponível no Básico',
   premium:  '⭐ Disponível no Premium',
   pro:      '👑 Disponível no Pro',
+  caocalmo: '🔒 Módulo Cão Calmo — R$47',
 }
 
 function formatHoursLeft(h: number) {
@@ -34,7 +36,7 @@ function formatHoursLeft(h: number) {
   return `${Math.ceil(h / 24)}d`
 }
 
-export default function ModuleList({ modules, pet, userPlan }: any) {
+export default function ModuleList({ modules, pet, userPlan, hasCalmo }: any) {
   const router = useRouter()
 
   const desafioModules = modules.filter((m: any) => m.product === 'dogflow_7dias')
@@ -65,7 +67,11 @@ export default function ModuleList({ modules, pet, userPlan }: any) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: i * 0.04 }}
         onClick={() => {
-          if (lockedByPlan) { router.push('/planos'); return }
+          if (lockedByPlan) { 
+            const isCalmoLock = module.required_plan === 'caocalmo'
+            router.push(isCalmoLock ? 'https://pay.kiwify.com.br/TDTPcu6' : '/planos')
+            return
+          }
           if (!isLocked) router.push(`/treino/${module.id}`)
         }}
         className={`bg-white rounded-3xl overflow-hidden shadow-sm border transition-all ${
