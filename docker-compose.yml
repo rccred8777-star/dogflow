@@ -1,0 +1,28 @@
+services:
+  dogflow:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_SUPABASE_URL: ${NEXT_PUBLIC_SUPABASE_URL}
+        NEXT_PUBLIC_SUPABASE_ANON_KEY: ${NEXT_PUBLIC_SUPABASE_ANON_KEY}
+        NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL}
+    container_name: dogflow
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    environment:
+      - NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
+      - NEXT_PUBLIC_SUPABASE_ANON_KEY=${NEXT_PUBLIC_SUPABASE_ANON_KEY}
+      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
+      - NEXT_PUBLIC_SITE_URL=${NEXT_PUBLIC_SITE_URL}
+      - KIWIFY_WEBHOOK_SECRET=${KIWIFY_WEBHOOK_SECRET}
+      - KIWIFY_LINK_BASICO=${KIWIFY_LINK_BASICO}
+      - KIWIFY_LINK_PREMIUM=${KIWIFY_LINK_PREMIUM}
+      - KIWIFY_LINK_PRO=${KIWIFY_LINK_PRO}
+    networks:
+      - planopratico_net
+
+networks:
+  planopratico_net:
+    external: true

@@ -1,0 +1,15 @@
+# segredos
+.env
+.env.local
+*.env
+!.env.example
+# dependências e build
+node_modules/
+**/node_modules/
+.next/
+**/.next/
+out/
+dist/
+# logs/sistema
+*.log
+.DS_Store
