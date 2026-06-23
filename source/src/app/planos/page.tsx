@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Check, PawPrint, Zap, Crown, Star, Lock } from 'lucide-react'
 import { createClient } from '@/lib/supabase'
+import { fbqTrack, parsePrice } from '@/lib/fbpixel'
 
 const PLAN_HIERARCHY: Record<string, number> = {
   free: 0, desafio: 1, basico: 2, premium: 3, pro: 4,
@@ -206,6 +207,12 @@ export default function PlanosPage() {
                       href={checkoutLink}
                       target="_blank"
                       rel="noopener noreferrer"
+                      onClick={() => fbqTrack('InitiateCheckout', {
+                        content_name: plan.name,
+                        content_category: 'dogflow_assinatura',
+                        value: parsePrice(plan.price),
+                        currency: 'BRL',
+                      })}
                       className={`w-full py-3.5 rounded-2xl font-bold text-sm flex items-center justify-center gap-1.5 transition-all ${
                         plan.popular
                           ? 'bg-brand-500 hover:bg-brand-600 text-white shadow-md'

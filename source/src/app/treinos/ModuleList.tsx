@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion'
 import { useRouter } from 'next/navigation'
 import { Lock, CheckCircle, ChevronRight, PawPrint, Trophy, Flame, Star, Crown } from 'lucide-react'
+import { fbqTrack } from '@/lib/fbpixel'
 
 const DAY_CONFIG = [
   { emoji: '👋', label: 'Intro',  gradient: 'from-violet-500 to-purple-700',  photo: '/dogs/day0.jpg' },
@@ -67,9 +68,19 @@ export default function ModuleList({ modules, pet, userPlan, hasCalmo }: any) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: i * 0.04 }}
         onClick={() => {
-          if (lockedByPlan) { 
+          if (lockedByPlan) {
             const isCalmoLock = module.required_plan === 'caocalmo'
-            router.push(isCalmoLock ? 'https://pay.kiwify.com.br/TDTPcu6' : '/planos')
+            if (isCalmoLock) {
+              fbqTrack('InitiateCheckout', {
+                content_name: 'Cão Calmo',
+                content_category: 'dogflow',
+                value: 47,
+                currency: 'BRL',
+              })
+              router.push('https://pay.kiwify.com.br/TDTPcu6')
+            } else {
+              router.push('/planos')
+            }
             return
           }
           if (!isLocked) router.push(`/treino/${module.id}`)
