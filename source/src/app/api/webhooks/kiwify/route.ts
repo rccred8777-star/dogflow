@@ -7,6 +7,7 @@ const N8N_CARRINHO_URL   = 'https://n8n.planopratico.shop/webhook/kiwify-carrinh
 // Mapa produto Kiwify → plan interno
 const PRODUCT_PLAN: Record<string, string> = {
   'dogflow_7dias':     'desafio',
+  'dogflow_caocalmo':  'caocalmo',
   'dogflow_basico':    'basico',
   'dogflow_premium':   'premium',
   'dogflow_pro':       'pro',
@@ -14,6 +15,10 @@ const PRODUCT_PLAN: Record<string, string> = {
 
 function detectProduct(body: any): string {
   const productName = (body?.order?.Product?.name || body?.Product?.name || '').toLowerCase()
+  // checkout_id é o sinal mais confiável; nome é fallback
+  const checkoutId = body?.order?.checkout_id || body?.checkout_id || ''
+  if (checkoutId === 'TDTPcu6' || productName.includes('calmo')) return 'dogflow_caocalmo'
+  // 'calmo' precisa vir ANTES de 'pro' — "Protocolo Cão Calmo" contém "pro" (em "protocolo")
   if (productName.includes('pro'))     return 'dogflow_pro'
   if (productName.includes('premium')) return 'dogflow_premium'
   if (productName.includes('básico') || productName.includes('basico')) return 'dogflow_basico'
