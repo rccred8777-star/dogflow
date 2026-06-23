@@ -5,7 +5,8 @@ import { createServiceSupabase } from '@/lib/supabase-server'
 const PRODUCT_MAP: Record<string, string> = {
   a6a8NmF: 'desafio',       // DogFlow 7 Dias R$27
   VhbF8rS: 'desafio',       // DogFlow (upsell checkout alternativo)
-  TDTPcu6: 'caocalmo',      // Protocolo Cão Calmo R$47
+  TDTPcu6: 'desafio',       // DogFlow 7 Dias (Xixi) — checkout do DESAFIO, não do Cão Calmo
+  gmD7yDF: 'caocalmo',      // Protocolo Cão Calmo (Ansiedade de Separação) R$47
   Z4f6t5U: 'silencioso',    // Módulo Cão Silencioso R$17
   sOitKRK: 'basico',        // Plano Básico R$29,90
   YvUvutB: 'premium',       // Plano Premium R$59,90

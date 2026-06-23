@@ -55,7 +55,7 @@ function detectProduct(body: any): string {
   const productName = (body?.order?.Product?.name || body?.Product?.name || '').toLowerCase()
   // checkout_id é o sinal mais confiável; nome é fallback
   const checkoutId = body?.order?.checkout_id || body?.checkout_id || ''
-  if (checkoutId === 'TDTPcu6' || productName.includes('calmo')) return 'dogflow_caocalmo'
+  if (checkoutId === 'gmD7yDF' || productName.includes('calmo')) return 'dogflow_caocalmo'
   // 'calmo' precisa vir ANTES de 'pro' — "Protocolo Cão Calmo" contém "pro" (em "protocolo")
   if (productName.includes('pro'))     return 'dogflow_pro'
   if (productName.includes('premium')) return 'dogflow_premium'

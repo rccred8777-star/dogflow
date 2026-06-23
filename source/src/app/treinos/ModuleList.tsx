@@ -77,7 +77,7 @@ export default function ModuleList({ modules, pet, userPlan, hasCalmo }: any) {
                 value: 47,
                 currency: 'BRL',
               })
-              router.push('https://pay.kiwify.com.br/TDTPcu6')
+              router.push('https://pay.kiwify.com.br/gmD7yDF')
             } else {
               router.push('/planos')
             }
