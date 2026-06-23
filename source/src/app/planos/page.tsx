@@ -1,8 +1,8 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { motion } from 'framer-motion'
-import { Check, PawPrint, Zap, Crown, Star, Lock } from 'lucide-react'
+import { PawPrint, Crown, Star, Lock, ArrowLeft, Check } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase'
 import { fbqTrack, parsePrice } from '@/lib/fbpixel'
 
@@ -80,6 +80,7 @@ const PLAN_LABELS: Record<string, string> = {
 
 export default function PlanosPage() {
   const supabase = createClient()
+  const router = useRouter()
   const [currentPlan, setCurrentPlan] = useState<string>('free')
   const [links, setLinks] = useState<Record<string, string | null>>({})
   const [loading, setLoading] = useState(true)
@@ -110,134 +111,89 @@ export default function PlanosPage() {
   const userLevel = PLAN_HIERARCHY[currentPlan] ?? 0
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-28">
-      {/* Header */}
-      <div className="bg-gradient-to-br from-brand-500 to-brand-700 px-5 pt-14 pb-20 safe-top relative overflow-hidden">
-        <div className="absolute -top-6 -right-6 w-32 h-32 rounded-full bg-white/10" />
-        <div className="flex items-center gap-2 mb-1 relative">
-          <PawPrint className="w-5 h-5 text-white/80" />
-          <span className="text-white/80 text-sm font-semibold">DogFlow</span>
+    <div style={{ minHeight: '100vh', background: '#FAFAF7', padding: '8px 20px 120px' }}>
+      {/* header */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 20, paddingTop: 8 }}>
+        <button onClick={() => router.push('/treinos')} style={{ width: 40, height: 40, borderRadius: 13, border: '1px solid #ECE7DE', background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#1A1814', cursor: 'pointer', flexShrink: 0 }}>
+          <ArrowLeft style={{ width: 20, height: 20 }} strokeWidth={2.2} />
+        </button>
+        <div>
+          <h1 style={{ fontSize: 23, fontWeight: 800, color: '#1A1814', letterSpacing: '-0.5px', margin: 0, lineHeight: 1.05 }}>Continue evoluindo</h1>
+          <p style={{ fontSize: 13, color: '#8A8579', margin: '2px 0 0', fontWeight: 500 }}>Escolha o plano ideal</p>
         </div>
-        <h1 className="text-2xl font-extrabold text-white relative mt-2">Continue evoluindo</h1>
-        <p className="text-white/70 text-sm mt-1 relative">Escolha o plano ideal para você e seu cão</p>
       </div>
 
-      <div className="px-4 -mt-12">
-        {/* Plano atual */}
-        {!loading && (
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="bg-white rounded-3xl p-4 shadow-lg border border-gray-100 mb-5 flex items-center justify-between"
-          >
-            <div>
-              <p className="text-xs text-gray-400 font-medium">Seu plano atual</p>
-              <p className="text-lg font-extrabold text-gray-900">{PLAN_LABELS[currentPlan] ?? currentPlan}</p>
+      {/* plano atual */}
+      {!loading && (
+        <div style={{ background: '#fff', border: '1px solid #F0EDE6', borderRadius: 18, padding: '15px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20, boxShadow: '0 2px 8px -4px rgba(40,30,15,0.08)' }}>
+          <div>
+            <p style={{ fontSize: 12, color: '#A8A296', fontWeight: 600, margin: 0 }}>Seu plano atual</p>
+            <p style={{ fontSize: 17, fontWeight: 800, color: '#1A1814', margin: '2px 0 0' }}>{PLAN_LABELS[currentPlan] ?? currentPlan}</p>
+          </div>
+          <span style={{ background: '#E9F8EF', color: '#1B9E5A', fontSize: 12, fontWeight: 700, padding: '6px 13px', borderRadius: 999 }}>Ativo</span>
+        </div>
+      )}
+
+      {/* cards */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+        {PLANS.map((plan) => {
+          const planLevel = PLAN_HIERARCHY[plan.id] ?? 0
+          const isCurrentPlan = currentPlan === plan.id
+          const isDowngrade = planLevel < userLevel
+          const checkoutLink = links[plan.id]
+
+          return (
+            <div key={plan.id} style={{ background: '#fff', border: plan.popular ? '2px solid #F26B0F' : '1px solid #F0EDE6', borderRadius: 22, overflow: 'hidden', boxShadow: plan.popular ? '0 14px 34px -12px rgba(242,107,15,0.4)' : '0 2px 10px -4px rgba(40,30,15,0.08)' }}>
+              {plan.popular && !isCurrentPlan && (
+                <div style={{ background: '#F26B0F', color: '#fff', fontSize: 11, fontWeight: 800, letterSpacing: 0.6, textAlign: 'center', padding: 7, textTransform: 'uppercase' }}>Mais escolhido</div>
+              )}
+              {isCurrentPlan && (
+                <div style={{ background: '#1B9E5A', color: '#fff', fontSize: 11, fontWeight: 800, letterSpacing: 0.6, textAlign: 'center', padding: 7, textTransform: 'uppercase' }}>✓ Seu plano atual</div>
+              )}
+              <div style={{ padding: 20 }}>
+                <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 16 }}>
+                  <div>
+                    <p style={{ fontSize: 19, fontWeight: 800, color: '#1A1814', margin: 0, letterSpacing: '-0.3px' }}>{plan.name}</p>
+                    <p style={{ fontSize: 12.5, color: '#8A8579', margin: '3px 0 0', fontWeight: 500 }}>{plan.description}</p>
+                  </div>
+                  <div style={{ textAlign: 'right', flexShrink: 0 }}>
+                    <p style={{ fontSize: 22, fontWeight: 800, color: '#1A1814', margin: 0, letterSpacing: '-0.5px' }}>{plan.price}</p>
+                    <p style={{ fontSize: 11.5, color: '#A8A296', margin: '1px 0 0', fontWeight: 600 }}>por mês</p>
+                  </div>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 9, marginBottom: 18 }}>
+                  {plan.features.map((f, j) => (
+                    <div key={j} style={{ display: 'flex', alignItems: 'flex-start', gap: 9 }}>
+                      <span style={{ color: '#1B9E5A', display: 'flex', flexShrink: 0, marginTop: 1 }}><Check style={{ width: 16, height: 16 }} strokeWidth={3} /></span>
+                      <span style={{ fontSize: 13, color: '#4A453C', fontWeight: 500, lineHeight: 1.35 }}>{f}</span>
+                    </div>
+                  ))}
+                </div>
+
+                {isCurrentPlan ? (
+                  <div style={{ width: '100%', padding: 15, borderRadius: 15, fontWeight: 800, fontSize: 14.5, textAlign: 'center', background: '#E9F8EF', color: '#1B9E5A' }}>✓ Plano ativo</div>
+                ) : checkoutLink ? (
+                  <a
+                    href={checkoutLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => fbqTrack('InitiateCheckout', { content_name: plan.name, content_category: 'dogflow_assinatura', value: parsePrice(plan.price), currency: 'BRL' })}
+                    style={{ display: 'block', width: '100%', padding: 15, borderRadius: 15, fontWeight: 800, fontSize: 14.5, textAlign: 'center', textDecoration: 'none', color: '#fff', background: plan.popular ? '#F26B0F' : '#1A1814' }}
+                  >
+                    {isDowngrade ? `Mudar para ${plan.name}` : `Assinar ${plan.name}`}
+                  </a>
+                ) : (
+                  <div style={{ width: '100%', padding: 15, borderRadius: 15, fontWeight: 800, fontSize: 14.5, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, background: '#F4F1EA', color: '#B7B1A4' }}>
+                    <Lock style={{ width: 16, height: 16 }} /> Em breve
+                  </div>
+                )}
+              </div>
             </div>
-            {userLevel >= 2 && (
-              <span className="bg-green-100 text-green-700 text-xs font-bold px-3 py-1 rounded-full">Ativo</span>
-            )}
-          </motion.div>
-        )}
-
-        {/* Cards de plano */}
-        <div className="space-y-4">
-          {PLANS.map((plan, i) => {
-            const Icon = plan.icon
-            const planLevel = PLAN_HIERARCHY[plan.id] ?? 0
-            const isCurrentPlan = currentPlan === plan.id
-            const isDowngrade = planLevel < userLevel
-            const checkoutLink = links[plan.id]
-
-            return (
-              <motion.div
-                key={plan.id}
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.08 }}
-                className={`bg-white rounded-3xl overflow-hidden border shadow-sm ${
-                  plan.popular ? 'border-brand-300 shadow-brand-100 shadow-md' : 'border-gray-100'
-                } ${isCurrentPlan ? 'ring-2 ring-green-400' : ''}`}
-              >
-                {!isCurrentPlan && (
-                  <div className={`text-white text-xs font-bold text-center py-1.5 tracking-wide bg-gradient-to-r ${plan.gradient}`}>
-                    {plan.tag}
-                  </div>
-                )}
-                {isCurrentPlan && (
-                  <div className="bg-green-500 text-white text-xs font-bold text-center py-1.5 tracking-wide">
-                    ✓ SEU PLANO ATUAL
-                  </div>
-                )}
-
-                <div className={`bg-gradient-to-r ${plan.gradient} px-5 py-5`}>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="bg-white/20 rounded-2xl p-2">
-                        <Icon className="w-6 h-6 text-white" />
-                      </div>
-                      <div>
-                        <h3 className="text-white font-extrabold text-lg">{plan.name}</h3>
-                        <p className="text-white/70 text-xs">{plan.description}</p>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-white font-extrabold text-2xl">{plan.price}</p>
-                      <p className="text-white/60 text-xs">por mês</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="px-5 py-4">
-                  <div className="space-y-2 mb-5">
-                    {plan.features.map((f, j) => (
-                      <div key={j} className="flex items-start gap-2">
-                        <Check className="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5" />
-                        <span className="text-sm text-gray-600">{f}</span>
-                      </div>
-                    ))}
-                  </div>
-
-                  {isCurrentPlan ? (
-                    <div className="w-full py-3.5 rounded-2xl font-bold text-sm text-center bg-green-50 text-green-700 border border-green-200">
-                      ✓ Plano ativo
-                    </div>
-                  ) : checkoutLink ? (
-                    <a
-                      href={checkoutLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={() => fbqTrack('InitiateCheckout', {
-                        content_name: plan.name,
-                        content_category: 'dogflow_assinatura',
-                        value: parsePrice(plan.price),
-                        currency: 'BRL',
-                      })}
-                      className={`w-full py-3.5 rounded-2xl font-bold text-sm flex items-center justify-center gap-1.5 transition-all ${
-                        plan.popular
-                          ? 'bg-brand-500 hover:bg-brand-600 text-white shadow-md'
-                          : 'bg-gray-900 hover:bg-gray-800 text-white'
-                      }`}
-                    >
-                      <Zap className="w-4 h-4" />
-                      {isDowngrade ? `Mudar para ${plan.name}` : `Assinar ${plan.name}`}
-                    </a>
-                  ) : (
-                    <div className="w-full py-3.5 rounded-2xl font-bold text-sm flex items-center justify-center gap-1.5 bg-gray-100 text-gray-400 cursor-not-allowed">
-                      <Lock className="w-4 h-4" />
-                      Em breve
-                    </div>
-                  )}
-                </div>
-              </motion.div>
-            )
-          })}
-        </div>
-
-        <p className="text-center text-gray-400 text-xs px-4 mt-4">
-          Cancele quando quiser. Sem fidelidade.
-        </p>
+          )
+        })}
       </div>
+
+      <p style={{ textAlign: 'center', fontSize: 12, color: '#A8A296', fontWeight: 500, margin: '18px 0 0' }}>Cancele quando quiser. Sem fidelidade.</p>
     </div>
   )
 }

@@ -1,9 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ArrowLeft, Plus, Syringe, Weight, Stethoscope, Pill, ChevronRight, X, Check, AlertCircle } from 'lucide-react'
+import { Plus, Syringe, Weight, Stethoscope, Pill, X, Check, AlertCircle } from 'lucide-react'
 import { createClient } from '@/lib/supabase'
 
 type Vaccine = {
@@ -39,7 +38,6 @@ function daysUntil(d: string) {
 export default function SaudeView({ pet, vaccines, healthRecords, userId }: {
   pet: any; vaccines: Vaccine[]; healthRecords: HealthRecord[]; userId: string
 }) {
-  const router = useRouter()
   const supabase = createClient()
   const [tab, setTab] = useState<'vacinas' | 'saude'>('vacinas')
   const [showVaccineForm, setShowVaccineForm] = useState(false)
@@ -84,23 +82,15 @@ export default function SaudeView({ pet, vaccines, healthRecords, userId }: {
   const upcomingVaccines = localVaccines.filter(v => v.next_dose && daysUntil(v.next_dose) <= 30 && daysUntil(v.next_dose) >= 0)
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-28">
-      {/* Header */}
-      <div className="bg-gradient-to-br from-brand-500 to-brand-700 px-5 pt-14 pb-8 safe-top">
-        <div className="flex items-center gap-3 mb-2">
-          <button onClick={() => router.back()} className="text-white/80">
-            <ArrowLeft className="w-6 h-6" />
-          </button>
-          <div>
-            <p className="text-brand-100 text-xs font-medium">
-              {pet?.name ? `🐾 ${pet.name}` : '🐾 Meu Pet'}
-            </p>
-            <h1 className="text-white font-bold text-xl">Caderneta de Saúde</h1>
-          </div>
-        </div>
+    <div className="min-h-screen pb-28">
+      <div className="px-5 pt-5 safe-top">
+        <p className="text-[13px] font-semibold text-[#A8A296]">
+          {pet?.name ? `${pet.name}${pet?.breed ? ' · ' + pet.breed : ''}` : 'Meu Pet'}
+        </p>
+        <h1 className="text-[25px] font-extrabold text-[#1A1814] tracking-tight mt-0.5">Caderneta de Saúde</h1>
       </div>
 
-      <div className="px-4 -mt-4">
+      <div className="px-4 mt-5">
         {/* Alertas de vacina próxima */}
         {upcomingVaccines.length > 0 && (
           <motion.div

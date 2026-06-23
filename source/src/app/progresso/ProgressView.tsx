@@ -1,144 +1,92 @@
 'use client'
 
-import { motion } from 'framer-motion'
-import { useRouter } from 'next/navigation'
-import { ArrowLeft, Flame, Trophy, Star, Award, CheckCircle } from 'lucide-react'
+import { Flame, Trophy, Check } from 'lucide-react'
 
 const BADGES = [
-  { key: 'first_day', icon: '🐾', label: 'Primeiro Passo',    desc: 'Completou o primeiro dia' },
-  { key: 'day3',      icon: '⚡', label: 'Sequência de 3',    desc: 'Completou 3 dias seguidos' },
-  { key: 'day7',      icon: '🏆', label: 'Missão Cumprida',   desc: 'Completou o desafio de 7 dias' },
-  { key: 'streak7',   icon: '🔥', label: 'Em Chamas',         desc: '7 dias de sequência' },
-  { key: 'streak30',  icon: '👑', label: 'Mestre DogFlow',    desc: '30 dias de sequência' },
-  { key: 'completed', icon: '🎓', label: 'Graduado',          desc: 'Completou todos os módulos' },
+  { key: 'first_day', icon: '🐾', label: 'Primeiro Passo' },
+  { key: 'day3',      icon: '⚡', label: 'Sequência de 3' },
+  { key: 'day7',      icon: '🏆', label: 'Missão Cumprida' },
+  { key: 'streak7',   icon: '🔥', label: 'Em Chamas' },
+  { key: 'streak30',  icon: '👑', label: 'Mestre DogFlow' },
+  { key: 'completed', icon: '🎓', label: 'Graduado' },
 ]
 
-export default function ProgressView({ modules, streak, badges, pet }: any) {
-  const router = useRouter()
+const card = { background: '#fff', border: '1px solid #F0EDE6', borderRadius: 20, boxShadow: '0 2px 8px -4px rgba(40,30,15,0.08)' } as const
+
+export default function ProgressView({ modules, streak, badges }: any) {
   const completed = modules.filter((m: any) => m.progress?.status === 'completed').length
   const total = modules.length
   const pct = total > 0 ? Math.round((completed / total) * 100) : 0
   const earnedKeys = new Set((badges || []).map((b: any) => b.badge_key))
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-28">
-      <div className="bg-gradient-to-br from-brand-500 to-brand-700 px-5 pt-14 pb-8 safe-top">
-        <div className="flex items-center gap-3">
-          <button onClick={() => router.back()} className="text-white/80">
-            <ArrowLeft className="w-6 h-6" />
-          </button>
-          <h1 className="text-white font-bold text-xl">Meu Progresso</h1>
+    <div style={{ minHeight: '100vh', background: '#FAFAF7', padding: '8px 20px 120px' }}>
+      <h1 style={{ fontSize: 25, fontWeight: 800, color: '#1A1814', letterSpacing: '-0.6px', margin: '0 0 22px' }}>Meu Progresso</h1>
+
+      {/* stats */}
+      <div style={{ display: 'flex', gap: 12, marginBottom: 14 }}>
+        <div style={{ ...card, flex: 1, padding: 18 }}>
+          <div style={{ width: 40, height: 40, borderRadius: 12, background: '#FFEFE0', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#F26B0F', marginBottom: 12 }}>
+            <Flame style={{ width: 22, height: 22 }} fill="currentColor" stroke="none" />
+          </div>
+          <p style={{ fontSize: 30, fontWeight: 800, color: '#1A1814', margin: 0, lineHeight: 1 }}>{streak?.current_streak || 0}<span style={{ fontSize: 14, color: '#A8A296', fontWeight: 700, marginLeft: 3 }}>dias</span></p>
+          <p style={{ fontSize: 12, color: '#A8A296', margin: '6px 0 0', fontWeight: 600 }}>Sequência atual</p>
+        </div>
+        <div style={{ ...card, flex: 1, padding: 18 }}>
+          <div style={{ width: 40, height: 40, borderRadius: 12, background: '#EDEBF7', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#6F5FE0', marginBottom: 12 }}>
+            <Trophy style={{ width: 22, height: 22 }} strokeWidth={2} />
+          </div>
+          <p style={{ fontSize: 30, fontWeight: 800, color: '#1A1814', margin: 0, lineHeight: 1 }}>{streak?.longest_streak || 0}<span style={{ fontSize: 14, color: '#A8A296', fontWeight: 700, marginLeft: 3 }}>dias</span></p>
+          <p style={{ fontSize: 12, color: '#A8A296', margin: '6px 0 0', fontWeight: 600 }}>Recorde</p>
         </div>
       </div>
 
-      <div className="px-4 -mt-4 space-y-4">
-        {/* Streak */}
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-white rounded-3xl p-5 shadow-sm border border-gray-100"
-        >
-          <div className="flex items-center gap-4">
-            <div className="bg-orange-50 rounded-2xl p-3">
-              <Flame className="w-8 h-8 text-orange-400" />
-            </div>
-            <div>
-              <p className="text-gray-500 text-sm">Sequência atual</p>
-              <p className="text-3xl font-extrabold text-gray-900">
-                {streak?.current_streak || 0} <span className="text-lg font-bold text-gray-400">dias</span>
-              </p>
-              {streak?.longest_streak > 0 && (
-                <p className="text-xs text-gray-400 mt-0.5">Recorde: {streak.longest_streak} dias</p>
-              )}
-            </div>
-          </div>
-        </motion.div>
+      {/* progresso geral */}
+      <div style={{ ...card, padding: 20, marginBottom: 14 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+          <span style={{ fontSize: 15, fontWeight: 700, color: '#1A1814' }}>Desafio 7 Dias</span>
+          <span style={{ fontSize: 14, fontWeight: 800, color: '#F26B0F' }}>{completed}/{total}</span>
+        </div>
+        <div style={{ height: 9, background: '#F1EEE7', borderRadius: 999, overflow: 'hidden' }}>
+          <div style={{ height: '100%', width: `${pct}%`, background: '#F26B0F', borderRadius: 999, transition: 'width .8s ease' }} />
+        </div>
+      </div>
 
-        {/* Progresso geral */}
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="bg-white rounded-3xl p-5 shadow-sm border border-gray-100"
-        >
-          <div className="flex items-center gap-2 mb-3">
-            <Trophy className="w-5 h-5 text-brand-500" />
-            <span className="font-bold text-gray-800">Desafio 7 Dias</span>
-            <span className="ml-auto text-sm font-bold text-brand-500">{completed}/{total} dias</span>
-          </div>
-          <div className="w-full bg-gray-100 rounded-full h-3">
-            <motion.div
-              initial={{ width: 0 }}
-              animate={{ width: `${pct}%` }}
-              transition={{ duration: 1, ease: 'easeOut' }}
-              className="bg-gradient-to-r from-brand-400 to-brand-600 h-3 rounded-full"
-            />
-          </div>
-          <p className="text-right text-xs text-brand-500 font-bold mt-1">{pct}%</p>
-        </motion.div>
-
-        {/* Badges */}
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="bg-white rounded-3xl p-5 shadow-sm border border-gray-100"
-        >
-          <div className="flex items-center gap-2 mb-4">
-            <Award className="w-5 h-5 text-brand-500" />
-            <span className="font-bold text-gray-800">Conquistas</span>
-            <span className="ml-auto text-xs text-gray-400">{earnedKeys.size}/{BADGES.length}</span>
-          </div>
-          <div className="grid grid-cols-3 gap-3">
-            {BADGES.map((b, i) => {
-              const earned = earnedKeys.has(b.key)
-              return (
-                <motion.div
-                  key={b.key}
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.3 + i * 0.07 }}
-                  className={`rounded-2xl p-3 text-center border transition-all ${
-                    earned
-                      ? 'bg-brand-50 border-brand-200'
-                      : 'bg-gray-50 border-gray-100 opacity-40'
-                  }`}
-                >
-                  <div className="text-2xl mb-1">{b.icon}</div>
-                  <p className={`text-[11px] font-bold leading-tight ${earned ? 'text-brand-700' : 'text-gray-400'}`}>
-                    {b.label}
-                  </p>
-                  {earned && <CheckCircle className="w-3 h-3 text-brand-400 mx-auto mt-1" />}
-                </motion.div>
-              )
-            })}
-          </div>
-        </motion.div>
-
-        {/* Lista de módulos */}
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="bg-white rounded-3xl p-5 shadow-sm border border-gray-100"
-        >
-          <div className="flex items-center gap-2 mb-4">
-            <Star className="w-5 h-5 text-brand-500" />
-            <span className="font-bold text-gray-800">Módulos</span>
-          </div>
-          <div className="space-y-2">
-            {modules.map((m: any) => (
-              <div key={m.id} className="flex items-center gap-3 py-2">
-                {m.progress?.status === 'completed'
-                  ? <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
-                  : <div className="w-5 h-5 rounded-full border-2 border-gray-200 flex-shrink-0" />}
-                <p className={`text-sm ${m.progress?.status === 'completed' ? 'text-gray-400 line-through' : 'text-gray-700 font-medium'}`}>
-                  {m.title}
-                </p>
+      {/* conquistas */}
+      <div style={{ ...card, padding: 20, marginBottom: 14 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+          <span style={{ fontSize: 15, fontWeight: 700, color: '#1A1814' }}>Conquistas</span>
+          <span style={{ fontSize: 12.5, fontWeight: 600, color: '#A8A296' }}>{earnedKeys.size} de {BADGES.length}</span>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 10 }}>
+          {BADGES.map((b) => {
+            const earned = earnedKeys.has(b.key)
+            return (
+              <div key={b.key} style={{ borderRadius: 16, padding: '13px 8px', textAlign: 'center', background: earned ? '#FFF6EF' : '#F7F5F0', border: `1px solid ${earned ? '#FFE0C7' : '#F0EDE6'}`, opacity: earned ? 1 : 0.55 }}>
+                <div style={{ width: 38, height: 38, borderRadius: '50%', margin: '0 auto 8px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: earned ? '#F26B0F' : '#E5E1D8', fontSize: 18 }}>{b.icon}</div>
+                <p style={{ fontSize: 10.5, fontWeight: 700, lineHeight: 1.2, margin: 0, color: earned ? '#A35408' : '#A8A296' }}>{b.label}</p>
               </div>
-            ))}
-          </div>
-        </motion.div>
+            )
+          })}
+        </div>
+      </div>
+
+      {/* módulos */}
+      <div style={{ ...card, padding: 20 }}>
+        <span style={{ fontSize: 15, fontWeight: 700, color: '#1A1814', display: 'block', marginBottom: 6 }}>Módulos</span>
+        <div>
+          {modules.map((m: any) => {
+            const done = m.progress?.status === 'completed'
+            return (
+              <div key={m.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '9px 0', borderBottom: '1px solid #F4F1EA' }}>
+                {done
+                  ? <span style={{ color: '#1B9E5A', display: 'flex', flexShrink: 0 }}><Check style={{ width: 20, height: 20 }} strokeWidth={2.6} /></span>
+                  : <span style={{ width: 20, height: 20, borderRadius: 999, border: '2px solid #E2DCD0', flexShrink: 0, display: 'block' }} />}
+                <p style={{ fontSize: 13.5, margin: 0, fontWeight: done ? 500 : 600, color: done ? '#B7B1A4' : '#3A352D', textDecoration: done ? 'line-through' : 'none' }}>{m.title}</p>
+              </div>
+            )
+          })}
+        </div>
       </div>
     </div>
   )

@@ -1,33 +1,14 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import { useRouter } from 'next/navigation'
-import { Lock, CheckCircle, ChevronRight, PawPrint, Trophy, Flame, Star, Crown } from 'lucide-react'
+import { Lock, Check, ChevronRight, PawPrint } from 'lucide-react'
 import { fbqTrack } from '@/lib/fbpixel'
 
-const DAY_CONFIG = [
-  { emoji: '👋', label: 'Intro',  gradient: 'from-violet-500 to-purple-700',  photo: '/dogs/day0.jpg' },
-  { emoji: '👁️', label: 'Dia 1', gradient: 'from-blue-500 to-blue-700',      photo: '/dogs/day1.jpg' },
-  { emoji: '🐾', label: 'Dia 2', gradient: 'from-emerald-500 to-green-700',  photo: '/dogs/day2.jpg' },
-  { emoji: '🧘', label: 'Dia 3', gradient: 'from-amber-500 to-orange-600',   photo: '/dogs/day3.jpg' },
-  { emoji: '📣', label: 'Dia 4', gradient: 'from-rose-500 to-red-700',       photo: '/dogs/day4.jpg' },
-  { emoji: '🦮', label: 'Dia 5', gradient: 'from-sky-500 to-cyan-700',       photo: '/dogs/day5.jpg' },
-  { emoji: '🙅', label: 'Dia 6', gradient: 'from-fuchsia-500 to-pink-700',   photo: '/dogs/day6.jpg' },
-  { emoji: '🏆', label: 'Dia 7', gradient: 'from-yellow-500 to-amber-600',   photo: '/dogs/day7.jpg' },
-]
-
-const PLAN_CONFIGS: Record<string, { label: string; gradient: string; icon: string; photo: string }> = {
-  dogflow_basico:   { label: 'Básico',   gradient: 'from-slate-500 to-slate-700',   icon: '📚', photo: '/dogs/day2.jpg' },
-  dogflow_premium:  { label: 'Premium',  gradient: 'from-brand-500 to-brand-700',   icon: '⭐', photo: '/dogs/day5.jpg' },
-  dogflow_pro:      { label: 'Pro',      gradient: 'from-amber-500 to-amber-700',   icon: '👑', photo: '/dogs/day7.jpg' },
-  dogflow_caocalmo: { label: 'Cão Calmo', gradient: 'from-teal-500 to-teal-700',    icon: '😌', photo: '/dogs/day6.jpg' },
-}
-
 const PLAN_LOCK_LABELS: Record<string, string> = {
-  basico:   '🔒 Disponível no Básico',
-  premium:  '⭐ Disponível no Premium',
-  pro:      '👑 Disponível no Pro',
-  caocalmo: '🔒 Módulo Cão Calmo — R$47',
+  basico:   'Disponível no Básico',
+  premium:  'Disponível no Premium',
+  pro:      'Disponível no Pro',
+  caocalmo: 'Módulo Cão Calmo — R$47',
 }
 
 function formatHoursLeft(h: number) {
@@ -44,15 +25,24 @@ export default function ModuleList({ modules, pet, userPlan, hasCalmo }: any) {
   const subscriptionModules = modules.filter((m: any) => m.product !== 'dogflow_7dias')
 
   const completed = desafioModules.filter((m: any) => m.progress?.status === 'completed').length
-  const total = desafioModules.length
-  const pct = total > 0 ? Math.round((completed / total) * 100) : 0
+  const total = desafioModules.length || 1
+  const pct = Math.round((completed / total) * 100)
+  const faltam = Math.max(0, total - completed)
 
-  function renderCard(module: any, i: number, isDesafio: boolean) {
-    const cfg = isDesafio
-      ? (DAY_CONFIG[i] || DAY_CONFIG[0])
-      : { ...PLAN_CONFIGS[module.product], label: PLAN_CONFIGS[module.product]?.label || 'Extra', emoji: PLAN_CONFIGS[module.product]?.icon || '📚' }
+  function openModule(module: any) {
+    if (module.lockedByPlan) {
+      if (module.required_plan === 'caocalmo') {
+        fbqTrack('InitiateCheckout', { content_name: 'Cão Calmo', content_category: 'dogflow', value: 47, currency: 'BRL' })
+        router.push('https://pay.kiwify.com.br/gmD7yDF')
+      } else {
+        router.push('/planos')
+      }
+      return
+    }
+    if (module.unlocked) router.push(`/treino/${module.id}`)
+  }
 
-    const photo = (cfg as any).photo || '/dogs/day0.jpg'
+  function DayCard({ module }: any) {
     const isCompleted = module.progress?.status === 'completed'
     const isLocked = !module.unlocked
     const lockedByPlan = module.lockedByPlan
@@ -60,214 +50,153 @@ export default function ModuleList({ modules, pet, userPlan, hasCalmo }: any) {
     const stepsDone = module.progress?.completed_steps || 0
     const inProgress = stepsDone > 0 && !isCompleted
     const stepPct = Math.round((stepsDone / stepsTotal) * 100)
+    const num = module.order_index
 
     return (
-      <motion.div
-        key={module.id}
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: i * 0.04 }}
-        onClick={() => {
-          if (lockedByPlan) {
-            const isCalmoLock = module.required_plan === 'caocalmo'
-            if (isCalmoLock) {
-              fbqTrack('InitiateCheckout', {
-                content_name: 'Cão Calmo',
-                content_category: 'dogflow',
-                value: 47,
-                currency: 'BRL',
-              })
-              router.push('https://pay.kiwify.com.br/gmD7yDF')
-            } else {
-              router.push('/planos')
-            }
-            return
-          }
-          if (!isLocked) router.push(`/treino/${module.id}`)
+      <div
+        onClick={() => openModule(module)}
+        style={{
+          background: '#fff', border: '1px solid #F0EDE6', borderRadius: 20, padding: 13,
+          display: 'flex', alignItems: 'center', gap: 14,
+          boxShadow: '0 2px 8px -4px rgba(40,30,15,0.08)',
+          cursor: lockedByPlan || !isLocked ? 'pointer' : 'default',
+          opacity: isLocked && !lockedByPlan ? 0.7 : 1,
         }}
-        className={`bg-white rounded-3xl overflow-hidden shadow-sm border transition-all ${
-          lockedByPlan
-            ? 'cursor-pointer hover:shadow-md border-gray-100 opacity-80'
-            : isLocked
-            ? 'opacity-55 cursor-not-allowed border-gray-100'
-            : isCompleted
-            ? 'cursor-pointer hover:shadow-md border-green-100'
-            : 'cursor-pointer hover:shadow-md active:scale-[0.99] border-gray-100'
-        }`}
       >
-        <div className="relative h-36 overflow-hidden">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={photo} alt={module.title} className={`w-full h-full object-cover ${lockedByPlan ? 'grayscale' : ''}`} />
-          <div className={`absolute inset-0 bg-gradient-to-t ${cfg.gradient} opacity-60`} />
-
-          {/* Badge */}
-          <div className="absolute top-3 left-3">
-            <span className="bg-white/90 backdrop-blur-sm text-gray-800 text-xs font-bold px-3 py-1 rounded-full shadow-sm">
-              {cfg.label}
-            </span>
+        {/* badge */}
+        {isCompleted ? (
+          <div style={{ width: 50, height: 50, borderRadius: 15, background: '#E9F8EF', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, color: '#1B9E5A' }}>
+            <Check style={{ width: 24, height: 24 }} strokeWidth={2.6} />
           </div>
-
-          {/* Status */}
-          <div className="absolute top-3 right-3">
-            {isCompleted && <div className="bg-green-500 rounded-full p-1"><CheckCircle className="w-4 h-4 text-white" /></div>}
-            {lockedByPlan && <div className="bg-black/50 backdrop-blur-sm rounded-full p-1.5"><Lock className="w-3.5 h-3.5 text-white" /></div>}
-            {!lockedByPlan && isLocked && <div className="bg-black/40 backdrop-blur-sm rounded-full p-1.5"><Lock className="w-3.5 h-3.5 text-white" /></div>}
+        ) : !isLocked ? (
+          <div style={{ width: 50, height: 50, borderRadius: 15, background: '#F26B0F', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', flexShrink: 0, boxShadow: '0 6px 14px -4px rgba(242,107,15,0.5)' }}>
+            <span style={{ color: '#FFD9BC', fontSize: 8, fontWeight: 800, letterSpacing: 0.5, lineHeight: 1 }}>DIA</span>
+            <span style={{ color: '#fff', fontSize: 20, fontWeight: 800, lineHeight: 1 }}>{num}</span>
           </div>
-
-          {/* Título */}
-          <div className="absolute bottom-3 left-3 right-10">
-            <h3 className="text-white font-bold text-base leading-tight drop-shadow-md">{module.title}</h3>
+        ) : (
+          <div style={{ width: 50, height: 50, borderRadius: 15, background: '#F4F1EA', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', flexShrink: 0, color: '#B7B1A4' }}>
+            <span style={{ fontSize: 8, fontWeight: 800, letterSpacing: 0.5, lineHeight: 1 }}>DIA</span>
+            <span style={{ fontSize: 20, fontWeight: 800, lineHeight: 1 }}>{num}</span>
           </div>
-        </div>
+        )}
 
-        <div className="px-4 py-3 flex items-center justify-between">
-          {lockedByPlan ? (
-            <p className="text-xs font-semibold text-brand-500">{PLAN_LOCK_LABELS[module.required_plan] || '🔒 Plano necessário'}</p>
+        {/* middle */}
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <p style={{ fontSize: 15, fontWeight: 700, color: '#1A1814', margin: 0, letterSpacing: '-0.2px' }}>{module.title}</p>
+          {isCompleted ? (
+            <p style={{ fontSize: 12.5, fontWeight: 700, color: '#1B9E5A', margin: '4px 0 0' }}>Concluído</p>
+          ) : lockedByPlan ? (
+            <p style={{ fontSize: 12.5, fontWeight: 700, color: '#F26B0F', margin: '4px 0 0' }}>{PLAN_LOCK_LABELS[module.required_plan] || 'Plano necessário'}</p>
           ) : isLocked ? (
-            <p className="text-xs text-gray-400">🔒 Libera em {formatHoursLeft(module.hoursLeft)}</p>
+            <p style={{ fontSize: 12.5, fontWeight: 600, color: '#B7B1A4', margin: '4px 0 0' }}>Libera em {formatHoursLeft(module.hoursLeft)}</p>
           ) : inProgress ? (
-            <div className="flex-1 mr-3">
-              <div className="flex justify-between text-xs text-gray-400 mb-1">
-                <span>Em andamento</span><span className="font-semibold text-brand-500">{stepPct}%</span>
+            <div style={{ marginTop: 7 }}>
+              <div style={{ height: 5, background: '#F1EEE7', borderRadius: 999, overflow: 'hidden' }}>
+                <div style={{ height: '100%', width: `${stepPct}%`, background: '#F26B0F', borderRadius: 999 }} />
               </div>
-              <div className="w-full bg-gray-100 rounded-full h-1.5">
-                <div className="bg-brand-500 h-1.5 rounded-full" style={{ width: `${stepPct}%` }} />
-              </div>
+              <p style={{ fontSize: 11.5, fontWeight: 600, color: '#A8A296', margin: '5px 0 0' }}>{stepsDone} de {stepsTotal} passos · em andamento</p>
             </div>
-          ) : isCompleted ? (
-            <span className="text-green-600 text-sm font-semibold">✓ Concluído</span>
           ) : (
-            <span className="text-brand-500 text-sm font-semibold">Pronto para começar</span>
+            <p style={{ fontSize: 12.5, fontWeight: 700, color: '#F26B0F', margin: '4px 0 0' }}>Pronto para começar</p>
           )}
-          {!isLocked && <ChevronRight className="w-5 h-5 text-gray-300 flex-shrink-0" />}
-          {lockedByPlan && <ChevronRight className="w-5 h-5 text-brand-300 flex-shrink-0" />}
         </div>
-      </motion.div>
+
+        {/* right icon */}
+        {isLocked && !lockedByPlan ? (
+          <span style={{ color: '#C9C3B6', display: 'flex', flexShrink: 0 }}><Lock style={{ width: 18, height: 18 }} strokeWidth={2} /></span>
+        ) : (
+          <span style={{ color: lockedByPlan ? '#FFC79B' : '#D6D0C3', display: 'flex', flexShrink: 0 }}><ChevronRight style={{ width: 20, height: 20 }} strokeWidth={2.2} /></span>
+        )}
+      </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-28">
-      {/* Header */}
-      <div className="bg-gradient-to-br from-brand-500 via-brand-600 to-brand-700 px-5 pt-14 pb-24 safe-top relative overflow-hidden">
-        <div className="absolute -top-8 -right-8 w-40 h-40 rounded-full bg-white/10" />
-        <div className="absolute top-16 -right-4 w-24 h-24 rounded-full bg-white/5" />
-        <div className="flex items-center justify-between mb-1 relative">
-          <div className="flex items-center gap-2">
-            <PawPrint className="w-5 h-5 text-white/80" />
-            <span className="text-white/80 text-sm font-semibold tracking-wide">DogFlow</span>
-          </div>
-          <span className="bg-white/20 text-white text-xs font-bold px-3 py-1 rounded-full capitalize">
-            {userPlan === 'desafio' ? 'Desafio 7 Dias' : userPlan}
-          </span>
+    <div style={{ minHeight: '100vh', background: '#FAFAF7', padding: '8px 20px 120px' }}>
+      {/* header */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 22, paddingTop: 8 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
+          <span style={{ color: '#F26B0F', display: 'flex' }}><PawPrint style={{ width: 22, height: 22 }} /></span>
+          <span style={{ fontSize: 16, fontWeight: 800, color: '#1A1814', letterSpacing: '-0.3px' }}>DogFlow</span>
         </div>
-        <div className="flex items-center gap-4 mt-4 relative">
-          <button
-            onClick={() => router.push('/meu-pet')}
-            className="relative w-16 h-16 rounded-2xl overflow-hidden border-2 border-white/30 shadow-lg flex-shrink-0 active:scale-95 transition-transform"
-          >
-            {pet?.photo_url ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={pet.photo_url} alt={pet.name} className="w-full h-full object-cover" />
-            ) : (
-              <div className="w-full h-full bg-white/20 flex flex-col items-center justify-center gap-0.5">
-                <span className="text-2xl">🐾</span>
-                <span className="text-white/70 text-[9px] font-bold">FOTO</span>
-              </div>
-            )}
-          </button>
+        <button onClick={() => router.push('/planos')} style={{ border: '1px solid #ECE7DE', background: '#fff', color: '#6B6760', fontSize: 12, fontWeight: 700, padding: '6px 13px', borderRadius: 999, display: 'flex', alignItems: 'center', gap: 5, cursor: 'pointer' }}>
+          {userPlan === 'desafio' ? 'Desafio 7 Dias' : userPlan}
+          <ChevronRight style={{ width: 13, height: 13 }} strokeWidth={2.4} />
+        </button>
+      </div>
+
+      {/* greeting */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 22 }}>
+        <button onClick={() => router.push('/meu-pet')} style={{ width: 58, height: 58, borderRadius: 18, background: '#FFF0E4', border: '1px solid #FFE0C7', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, color: '#F26B0F', cursor: 'pointer', overflow: 'hidden', padding: 0 }}>
+          {pet?.photo_url
+            // eslint-disable-next-line @next/next/no-img-element
+            ? <img src={pet.photo_url} alt={pet?.name || 'pet'} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            : <PawPrint style={{ width: 28, height: 28 }} />}
+        </button>
+        <div>
+          <h1 style={{ fontSize: 25, fontWeight: 800, color: '#1A1814', letterSpacing: '-0.6px', margin: 0, lineHeight: 1.1 }}>
+            {pet?.name ? `Olá, ${pet.name}` : 'Seu Desafio'}
+          </h1>
+          <p style={{ fontSize: 14, color: '#8A8579', margin: '3px 0 0', fontWeight: 500 }}>Continue de onde parou</p>
+        </div>
+      </div>
+
+      {/* hero progress */}
+      <div style={{ background: '#F26B0F', borderRadius: 24, padding: 22, marginBottom: 26, boxShadow: '0 14px 30px -10px rgba(242,107,15,0.55)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
           <div>
-            <h1 className="text-white text-2xl font-extrabold leading-tight">
-              {pet?.name ? `Olá, ${pet.name}!` : 'Seu Desafio'}
-            </h1>
-            <p className="text-white/70 text-sm mt-0.5">Continue seu progresso hoje</p>
+            <p style={{ color: '#FFD9BC', fontSize: 12, fontWeight: 700, letterSpacing: 0.3, margin: 0, textTransform: 'uppercase' }}>Desafio 7 Dias</p>
+            <p style={{ color: '#fff', fontSize: 22, fontWeight: 800, margin: '4px 0 0', letterSpacing: '-0.4px' }}>{completed} <span style={{ opacity: 0.7, fontWeight: 600 }}>de {total} dias</span></p>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 5, background: 'rgba(255,255,255,0.18)', padding: '7px 12px', borderRadius: 999 }}>
+            <span style={{ fontSize: 15 }}>🔥</span>
+            <span style={{ color: '#fff', fontWeight: 800, fontSize: 14 }}>{completed}</span>
           </div>
         </div>
+        <div style={{ height: 9, background: 'rgba(255,255,255,0.25)', borderRadius: 999, overflow: 'hidden' }}>
+          <div style={{ height: '100%', width: `${pct}%`, background: '#fff', borderRadius: 999, transition: 'width .8s ease' }} />
+        </div>
+        <p style={{ color: '#FFE6D2', fontSize: 12, fontWeight: 600, margin: '9px 0 0' }}>{pct}% concluído · {faltam === 0 ? 'desafio completo!' : `faltam ${faltam} dia${faltam > 1 ? 's' : ''}`}</p>
       </div>
 
-      <div className="px-4 -mt-16">
-        {/* Progress card */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-white rounded-3xl p-5 shadow-lg border border-gray-100 mb-5"
-        >
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-2">
-              <div className="bg-brand-50 p-1.5 rounded-xl">
-                <Trophy className="w-4 h-4 text-brand-500" />
-              </div>
-              <span className="font-bold text-gray-800 text-sm">Desafio 7 Dias</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              {completed > 0 && <Flame className="w-4 h-4 text-orange-400" />}
-              <span className="text-sm font-bold text-gray-500">{completed}/{total} dias</span>
-            </div>
-          </div>
-          <div className="w-full bg-gray-100 rounded-full h-2.5 mb-1">
-            <motion.div
-              initial={{ width: 0 }}
-              animate={{ width: `${pct}%` }}
-              transition={{ duration: 0.9, ease: 'easeOut' }}
-              className="bg-gradient-to-r from-brand-400 to-brand-600 h-2.5 rounded-full"
-            />
-          </div>
-          <div className="flex justify-between text-xs text-gray-400 mt-1">
-            <span>0%</span>
-            <span className="font-semibold text-brand-500">{pct}%</span>
-            <span>100%</span>
-          </div>
-        </motion.div>
+      {/* dias */}
+      <p style={{ fontSize: 12, fontWeight: 700, color: '#A8A296', letterSpacing: 0.8, textTransform: 'uppercase', margin: '0 0 14px 2px' }}>Seu plano de 7 dias</p>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 11 }}>
+        {desafioModules.map((m: any) => <DayCard key={m.id} module={m} />)}
+      </div>
 
-        {/* Desafio 7 Dias */}
-        <div className="space-y-3 mb-6">
-          {desafioModules.map((module: any, i: number) => renderCard(module, i, true))}
-        </div>
-
-        {/* Módulos de assinatura */}
-        {subscriptionModules.length > 0 && (
-          <>
-            <div className="flex items-center gap-2 mb-3">
-              <Star className="w-4 h-4 text-brand-400" />
-              <h2 className="text-sm font-bold text-gray-600 uppercase tracking-wide">Conteúdo Extra</h2>
-            </div>
-            <div className="space-y-3">
-              {subscriptionModules.map((module: any, i: number) => renderCard(module, i, false))}
-            </div>
-
-            {/* Banner upgrade */}
-            {userPlan === 'desafio' && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.5 }}
-                onClick={() => router.push('/planos')}
-                className="mt-4 bg-gradient-to-r from-brand-500 to-brand-700 rounded-3xl p-5 cursor-pointer active:scale-[0.99] shadow-lg"
-              >
-                <div className="flex items-center gap-3">
-                  <Crown className="w-8 h-8 text-white flex-shrink-0" />
-                  <div className="flex-1">
-                    <p className="text-white font-bold text-base">Desbloqueie tudo</p>
-                    <p className="text-white/70 text-xs mt-0.5">A partir de R$29,90/mês — cancele quando quiser</p>
-                  </div>
-                  <ChevronRight className="w-5 h-5 text-white/70" />
+      {/* extras */}
+      {subscriptionModules.length > 0 && (
+        <>
+          <p style={{ fontSize: 12, fontWeight: 700, color: '#A8A296', letterSpacing: 0.8, textTransform: 'uppercase', margin: '26px 0 14px 2px' }}>Conteúdo extra</p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 11 }}>
+            {subscriptionModules.map((m: any) => (
+              <div key={m.id} onClick={() => openModule(m)} style={{ background: '#fff', border: '1px solid #F0EDE6', borderRadius: 20, padding: 13, display: 'flex', alignItems: 'center', gap: 14, boxShadow: '0 2px 8px -4px rgba(40,30,15,0.08)', cursor: 'pointer' }}>
+                <div style={{ width: 50, height: 50, borderRadius: 15, background: '#F4F1EA', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, color: '#B7B1A4' }}>
+                  <Lock style={{ width: 22, height: 22 }} strokeWidth={2} />
                 </div>
-              </motion.div>
-            )}
-          </>
-        )}
-      </div>
-    </div>
-  )
-}
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <p style={{ fontSize: 15, fontWeight: 700, color: '#1A1814', margin: 0, letterSpacing: '-0.2px' }}>{m.title}</p>
+                  <p style={{ fontSize: 12.5, fontWeight: 700, color: '#F26B0F', margin: '4px 0 0' }}>{PLAN_LOCK_LABELS[m.required_plan] || 'Conteúdo extra'}</p>
+                </div>
+                <span style={{ color: '#D6D0C3', display: 'flex', flexShrink: 0 }}><ChevronRight style={{ width: 20, height: 20 }} strokeWidth={2.2} /></span>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
 
-// Streak component — exportado para uso independente
-export function StreakBadge({ streak }: { streak: number }) {
-  if (streak < 1) return null
-  return (
-    <div className="flex items-center gap-1 bg-orange-50 border border-orange-200 rounded-full px-3 py-1">
-      <span className="text-base">🔥</span>
-      <span className="text-orange-600 font-bold text-sm">{streak} dia{streak > 1 ? 's' : ''}</span>
+      {/* upgrade */}
+      {userPlan === 'desafio' && (
+        <button onClick={() => router.push('/planos')} style={{ width: '100%', marginTop: 16, background: '#1A1814', border: 'none', borderRadius: 22, padding: '18px 20px', display: 'flex', alignItems: 'center', gap: 14, cursor: 'pointer', textAlign: 'left' }}>
+          <span style={{ color: '#FF9E4D', display: 'flex', flexShrink: 0, fontSize: 22 }}>⭐</span>
+          <div style={{ flex: 1 }}>
+            <p style={{ color: '#fff', fontSize: 15, fontWeight: 700, margin: 0 }}>Desbloqueie tudo</p>
+            <p style={{ color: '#9C978D', fontSize: 12.5, margin: '3px 0 0', fontWeight: 500 }}>A partir de R$29,90/mês · cancele quando quiser</p>
+          </div>
+          <span style={{ color: '#6B6760', display: 'flex' }}><ChevronRight style={{ width: 20, height: 20 }} strokeWidth={2.2} /></span>
+        </button>
+      )}
     </div>
   )
 }

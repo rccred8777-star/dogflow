@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase'
-import { Loader2, PawPrint, Camera, X } from 'lucide-react'
+import { Loader2, Camera, X } from 'lucide-react'
 
 const PROBLEMS = [
   { value: 'xixi',       emoji: '💧', label: 'Faz xixi fora do lugar' },
@@ -98,21 +98,14 @@ export default function MeuPetPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-10">
-      {/* Header */}
-      <div className="bg-gradient-to-br from-brand-500 to-brand-700 px-6 pt-14 pb-10 safe-top relative overflow-hidden">
-        <div className="absolute -top-6 -right-6 w-32 h-32 rounded-full bg-white/10" />
-        <div className="flex items-center gap-3 relative">
-          <PawPrint className="w-7 h-7 text-white" />
-          <div>
-            <h1 className="text-xl font-bold text-white">Cadastre seu cão</h1>
-            <p className="text-white/70 text-sm">Para personalizar seu desafio</p>
-          </div>
-        </div>
+    <div className="min-h-screen pb-28">
+      <div className="px-5 pt-5 safe-top">
+        <h1 className="text-[25px] font-extrabold text-[#1A1814] tracking-tight">Meu Pet</h1>
+        <p className="text-sm text-[#8A8579] mt-0.5 font-medium">Personalize o treino do seu cão</p>
       </div>
 
-      <div className="px-5 -mt-5">
-        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
+      <div className="px-5 mt-6">
+        <div className="bg-white rounded-3xl p-6 shadow-sm border border-[#F0EDE6]">
           <form onSubmit={handleSubmit} className="space-y-5">
 
             {/* Foto do cão */}
