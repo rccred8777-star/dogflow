@@ -116,6 +116,10 @@ export async function POST(req: NextRequest) {
   const product  = detectProduct(body)
   const plan     = PRODUCT_PLAN[product] ?? 'desafio'
 
+  // LOG TEMPORÁRIO p/ diagnóstico de detecção (remover depois).
+  console.log('[kiwify webhook] raw payload:', JSON.stringify(body))
+  console.log('[kiwify webhook] detected:', JSON.stringify({ event, orderId, email, product, plan }))
+
   // ── Compra aprovada ──────────────────────────────────────────────────────
   if (event === 'order_approved' || event === 'paid') {
     await supabase.from('purchases').upsert({
