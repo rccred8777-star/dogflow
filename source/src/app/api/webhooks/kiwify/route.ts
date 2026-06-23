@@ -1,8 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 
-const N8N_BOASVINDAS_URL = 'https://n8n.planopratico.shop/webhook/kiwify-compra'
-const N8N_CARRINHO_URL   = 'https://n8n.planopratico.shop/webhook/kiwify-carrinho'
+// URL INTERNA do Docker (dogflow e n8n na mesma rede planopratico_net).
+// A URL pública (https://n8n.planopratico.shop) falha por hairpin NAT de dentro do container.
+const N8N_BASE = process.env.N8N_INTERNAL_URL ?? 'http://n8n:5678'
+const N8N_BOASVINDAS_URL = `${N8N_BASE}/webhook/kiwify-compra`
+const N8N_CARRINHO_URL   = `${N8N_BASE}/webhook/kiwify-carrinho`
 
 // Mapa produto Kiwify → plan interno
 const PRODUCT_PLAN: Record<string, string> = {
@@ -40,11 +43,14 @@ function createAdminClient() {
 
 async function forwardToN8n(url: string, body: unknown) {
   try {
-    await fetch(url, {
+    const res = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
+      signal: AbortSignal.timeout(8000),
     })
+    // Não falhar calado: status != 2xx precisa aparecer no log.
+    if (!res.ok) console.error(`n8n forward HTTP ${res.status} (${url})`)
   } catch (e) {
     console.error(`n8n forward failed (${url})`, e)
   }
