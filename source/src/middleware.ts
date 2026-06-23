@@ -2,7 +2,8 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import { createServerClient } from '@supabase/ssr'
 
-const PUBLIC_ROUTES = ['/login', '/criar-senha', '/acesso-negado', '/api/']
+// Páginas de funil (tráfego de anúncio, deslogado) — precisam ser públicas
+const PUBLIC_ROUTES = ['/login', '/criar-senha', '/acesso-negado', '/api/', '/quiz', '/landing', '/upsell']
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
