@@ -6,6 +6,9 @@ import { createClient } from '@supabase/supabase-js'
 const N8N_BASE = process.env.N8N_INTERNAL_URL ?? 'http://n8n:5678'
 const N8N_BOASVINDAS_URL = `${N8N_BASE}/webhook/kiwify-compra`
 const N8N_CARRINHO_URL   = `${N8N_BASE}/webhook/kiwify-carrinho`
+const N8N_EMAIL_URL      = `${N8N_BASE}/webhook/enviar-email`
+
+const APP_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://app.planopratico.shop'
 
 // Mapa produto Kiwify → plan interno
 const PRODUCT_PLAN: Record<string, string> = {
@@ -14,6 +17,38 @@ const PRODUCT_PLAN: Record<string, string> = {
   'dogflow_basico':    'basico',
   'dogflow_premium':   'premium',
   'dogflow_pro':       'pro',
+}
+
+// Nome amigável do plano para o email
+const PLAN_LABEL: Record<string, string> = {
+  desafio:  'Desafio 7 Dias',
+  caocalmo: 'Protocolo Cão Calmo',
+  basico:   'Plano Básico',
+  premium:  'Plano Premium',
+  pro:      'Plano Pro',
+}
+
+// Email de boas-vindas/acesso — enviado a TODO comprador (novo ou recorrente),
+// já que o convite do Supabase só dispara para usuário inédito.
+function buildWelcomeEmail(email: string, name: string, plan: string) {
+  const label = PLAN_LABEL[plan] ?? 'DogFlow'
+  const firstName = name ? name.trim().split(/\s+/)[0] : ''
+  const hi = firstName ? `Oi, ${firstName}!` : 'Oi!'
+  return {
+    to: email,
+    subject: `🐶 Seu acesso ao DogFlow — ${label}`,
+    text: `${hi}
+
+Sua compra do ${label} foi confirmada. 🎉
+
+👉 Acesse o app: ${APP_URL}
+
+Entre com este mesmo e-mail (${email}).
+Se for seu primeiro acesso, toque em "Criar senha" na tela de login para definir sua senha.
+
+Bons treinos! 🐾
+Equipe DogFlow`,
+  }
 }
 
 function detectProduct(body: any): string {
@@ -113,6 +148,9 @@ export async function POST(req: NextRequest) {
       Customer: { name, email, mobile: phone },
       plan,
     })
+
+    // Email de acesso para TODO comprador (o convite Supabase só vai p/ usuário inédito).
+    await forwardToN8n(N8N_EMAIL_URL, buildWelcomeEmail(email, name, plan))
 
     return NextResponse.json({ ok: true })
   }
