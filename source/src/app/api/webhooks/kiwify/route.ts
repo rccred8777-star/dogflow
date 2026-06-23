@@ -52,11 +52,14 @@ Equipe DogFlow`,
 }
 
 function detectProduct(body: any): string {
-  const productName = (body?.order?.Product?.name || body?.Product?.name || '').toLowerCase()
-  // checkout_id é o sinal mais confiável; nome é fallback
-  const checkoutId = body?.order?.checkout_id || body?.checkout_id || ''
-  if (checkoutId === 'gmD7yDF' || productName.includes('calmo')) return 'dogflow_caocalmo'
+  // Kiwify envia o nome em Product.product_name (top-level, sem wrapper "order").
+  // NÃO há checkout_id no payload — detecção é pelo nome do produto.
+  const productName = (
+    body?.Product?.product_name ?? body?.order?.Product?.product_name ??
+    body?.Product?.name ?? body?.order?.Product?.name ?? ''
+  ).toLowerCase()
   // 'calmo' precisa vir ANTES de 'pro' — "Protocolo Cão Calmo" contém "pro" (em "protocolo")
+  if (productName.includes('calmo'))   return 'dogflow_caocalmo'
   if (productName.includes('pro'))     return 'dogflow_pro'
   if (productName.includes('premium')) return 'dogflow_premium'
   if (productName.includes('básico') || productName.includes('basico')) return 'dogflow_basico'
@@ -116,9 +119,7 @@ export async function POST(req: NextRequest) {
   const product  = detectProduct(body)
   const plan     = PRODUCT_PLAN[product] ?? 'desafio'
 
-  // LOG TEMPORÁRIO p/ diagnóstico de detecção (remover depois).
-  console.log('[kiwify webhook] raw payload:', JSON.stringify(body))
-  console.log('[kiwify webhook] detected:', JSON.stringify({ event, orderId, email, product, plan }))
+  console.log(`[kiwify] event=${event} product=${product} plan=${plan}`)
 
   // ── Compra aprovada ──────────────────────────────────────────────────────
   if (event === 'order_approved' || event === 'paid') {
