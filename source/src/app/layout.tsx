@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import './globals.css'
 import BottomNav from '@/components/BottomNav'
 import MetaPixel from '@/components/MetaPixel'
+import ServiceWorkerRegister from '@/components/ServiceWorkerRegister'
 
 export const metadata: Metadata = {
   title: 'DogFlow',
@@ -11,7 +12,7 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  themeColor: '#ff7a11',
+  themeColor: '#F26B0F',
   width: 'device-width',
   initialScale: 1,
   maximumScale: 1,
@@ -22,6 +23,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="pt-BR">
       <body className="bg-surface min-h-screen">
+        <ServiceWorkerRegister />
         <MetaPixel />
         {children}
         <BottomNav />
