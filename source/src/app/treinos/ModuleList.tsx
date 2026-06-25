@@ -11,10 +11,6 @@ const PLAN_LOCK_LABELS: Record<string, string> = {
   caocalmo: 'Módulo Cão Calmo — R$47',
 }
 
-const PLAN_EMOJI: Record<string, string> = {
-  basico: '📚', premium: '⭐', pro: '👑', caocalmo: '😌',
-}
-
 function formatHoursLeft(h: number) {
   if (h <= 0) return ''
   if (h < 1) return `${Math.ceil(h * 60)}min`
@@ -197,7 +193,7 @@ export default function ModuleList({ modules, pet, userPlan, hasCalmo }: any) {
                   {isCompleted ? (
                     <div style={{ width: 50, height: 50, borderRadius: 15, background: '#E9F8EF', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, color: '#1B9E5A' }}><Check style={{ width: 24, height: 24 }} strokeWidth={2.6} /></div>
                   ) : (
-                    <div style={{ width: 50, height: 50, borderRadius: 15, background: '#F26B0F', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontSize: 24, boxShadow: '0 6px 14px -4px rgba(242,107,15,0.5)' }}>{PLAN_EMOJI[m.required_plan] || '▶'}</div>
+                    <div style={{ width: 50, height: 50, borderRadius: 15, background: '#F26B0F', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, color: '#fff', boxShadow: '0 6px 14px -4px rgba(242,107,15,0.5)' }}><PawPrint style={{ width: 24, height: 24 }} strokeWidth={2.2} /></div>
                   )}
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <p style={{ fontSize: 15, fontWeight: 700, color: '#1A1814', margin: 0, letterSpacing: '-0.2px' }}>{m.title}</p>
