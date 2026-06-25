@@ -3,6 +3,7 @@ import './globals.css'
 import BottomNav from '@/components/BottomNav'
 import MetaPixel from '@/components/MetaPixel'
 import ServiceWorkerRegister from '@/components/ServiceWorkerRegister'
+import InstallPrompt from '@/components/InstallPrompt'
 
 export const metadata: Metadata = {
   title: 'DogFlow',
@@ -24,6 +25,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="pt-BR">
       <body className="bg-surface min-h-screen">
         <ServiceWorkerRegister />
+        <InstallPrompt />
         <MetaPixel />
         {children}
         <BottomNav />
