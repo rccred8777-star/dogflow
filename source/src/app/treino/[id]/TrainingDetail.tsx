@@ -15,7 +15,11 @@ type Step = {
 export default function TrainingDetail({ module, steps, progress, pet, userId }: any) {
   const router = useRouter()
   const supabase = createClient()
-  const [currentStep, setCurrentStep] = useState(progress?.completed_steps || 0)
+  // Se já concluído (completed_steps >= total), reabre do início p/ revisão (evita índice fora do range = tela branca)
+  const _done0 = progress?.completed_steps || 0
+  const [currentStep, setCurrentStep] = useState(
+    steps.length > 0 ? Math.min(_done0 >= steps.length ? 0 : _done0, steps.length - 1) : 0
+  )
   const [checkedItems, setCheckedItems] = useState<Set<number>>(new Set())
   const [saving, setSaving] = useState(false)
   const [done, setDone] = useState(false)
@@ -82,7 +86,12 @@ export default function TrainingDetail({ module, steps, progress, pet, userId }:
     </motion.div>
   )
 
-  if (!step) return null
+  if (!step) return (
+    <div className="min-h-screen flex flex-col items-center justify-center p-6 text-center gap-4">
+      <p className="text-gray-500">Conteúdo indisponível no momento.</p>
+      <button onClick={() => router.push('/treinos')} className="bg-brand-500 text-white font-bold px-6 py-3 rounded-2xl">Voltar aos treinos</button>
+    </div>
+  )
 
   return (
     <div className="min-h-screen bg-surface pb-32">

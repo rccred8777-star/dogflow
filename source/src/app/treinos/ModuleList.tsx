@@ -11,6 +11,10 @@ const PLAN_LOCK_LABELS: Record<string, string> = {
   caocalmo: 'Módulo Cão Calmo — R$47',
 }
 
+const PLAN_EMOJI: Record<string, string> = {
+  basico: '📚', premium: '⭐', pro: '👑', caocalmo: '😌',
+}
+
 function formatHoursLeft(h: number) {
   if (h <= 0) return ''
   if (h < 1) return `${Math.ceil(h * 60)}min`
@@ -170,18 +174,39 @@ export default function ModuleList({ modules, pet, userPlan, hasCalmo }: any) {
         <>
           <p style={{ fontSize: 12, fontWeight: 700, color: '#A8A296', letterSpacing: 0.8, textTransform: 'uppercase', margin: '26px 0 14px 2px' }}>Conteúdo extra</p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 11 }}>
-            {subscriptionModules.map((m: any) => (
-              <div key={m.id} onClick={() => openModule(m)} style={{ background: '#fff', border: '1px solid #F0EDE6', borderRadius: 20, padding: 13, display: 'flex', alignItems: 'center', gap: 14, boxShadow: '0 2px 8px -4px rgba(40,30,15,0.08)', cursor: 'pointer' }}>
-                <div style={{ width: 50, height: 50, borderRadius: 15, background: '#F4F1EA', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, color: '#B7B1A4' }}>
-                  <Lock style={{ width: 22, height: 22 }} strokeWidth={2} />
+            {subscriptionModules.map((m: any) => {
+              const isCompleted = m.progress?.status === 'completed'
+              // NÃO possui (travado por plano) → teaser com cadeado + label de compra
+              if (m.lockedByPlan) {
+                return (
+                  <div key={m.id} onClick={() => openModule(m)} style={{ background: '#fff', border: '1px solid #F0EDE6', borderRadius: 20, padding: 13, display: 'flex', alignItems: 'center', gap: 14, boxShadow: '0 2px 8px -4px rgba(40,30,15,0.08)', cursor: 'pointer' }}>
+                    <div style={{ width: 50, height: 50, borderRadius: 15, background: '#F4F1EA', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, color: '#B7B1A4' }}>
+                      <Lock style={{ width: 22, height: 22 }} strokeWidth={2} />
+                    </div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <p style={{ fontSize: 15, fontWeight: 700, color: '#1A1814', margin: 0, letterSpacing: '-0.2px' }}>{m.title}</p>
+                      <p style={{ fontSize: 12.5, fontWeight: 700, color: '#F26B0F', margin: '4px 0 0' }}>{PLAN_LOCK_LABELS[m.required_plan] || 'Conteúdo extra'}</p>
+                    </div>
+                    <span style={{ color: '#FFC79B', display: 'flex', flexShrink: 0 }}><ChevronRight style={{ width: 20, height: 20 }} strokeWidth={2.2} /></span>
+                  </div>
+                )
+              }
+              // POSSUI (ex: Cão Calmo comprado) → card desbloqueado, abre o conteúdo
+              return (
+                <div key={m.id} onClick={() => openModule(m)} style={{ background: '#fff', border: '1px solid #F0EDE6', borderRadius: 20, padding: 13, display: 'flex', alignItems: 'center', gap: 14, boxShadow: '0 2px 8px -4px rgba(40,30,15,0.08)', cursor: 'pointer' }}>
+                  {isCompleted ? (
+                    <div style={{ width: 50, height: 50, borderRadius: 15, background: '#E9F8EF', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, color: '#1B9E5A' }}><Check style={{ width: 24, height: 24 }} strokeWidth={2.6} /></div>
+                  ) : (
+                    <div style={{ width: 50, height: 50, borderRadius: 15, background: '#F26B0F', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontSize: 24, boxShadow: '0 6px 14px -4px rgba(242,107,15,0.5)' }}>{PLAN_EMOJI[m.required_plan] || '▶'}</div>
+                  )}
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <p style={{ fontSize: 15, fontWeight: 700, color: '#1A1814', margin: 0, letterSpacing: '-0.2px' }}>{m.title}</p>
+                    <p style={{ fontSize: 12.5, fontWeight: 700, color: isCompleted ? '#1B9E5A' : '#F26B0F', margin: '4px 0 0' }}>{isCompleted ? 'Concluído · rever' : 'Liberado · começar'}</p>
+                  </div>
+                  <span style={{ color: '#D6D0C3', display: 'flex', flexShrink: 0 }}><ChevronRight style={{ width: 20, height: 20 }} strokeWidth={2.2} /></span>
                 </div>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <p style={{ fontSize: 15, fontWeight: 700, color: '#1A1814', margin: 0, letterSpacing: '-0.2px' }}>{m.title}</p>
-                  <p style={{ fontSize: 12.5, fontWeight: 700, color: '#F26B0F', margin: '4px 0 0' }}>{PLAN_LOCK_LABELS[m.required_plan] || 'Conteúdo extra'}</p>
-                </div>
-                <span style={{ color: '#D6D0C3', display: 'flex', flexShrink: 0 }}><ChevronRight style={{ width: 20, height: 20 }} strokeWidth={2.2} /></span>
-              </div>
-            ))}
+              )
+            })}
           </div>
         </>
       )}
