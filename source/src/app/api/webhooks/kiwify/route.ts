@@ -34,6 +34,14 @@ function buildWelcomeEmail(email: string, name: string, plan: string) {
   const label = PLAN_LABEL[plan] ?? 'DogFlow'
   const firstName = name ? name.trim().split(/\s+/)[0] : ''
   const hi = firstName ? `Oi, ${firstName}!` : 'Oi!'
+  // Bônus de lançamento do Desafio 7 Dias (PDFs hospedados no funil)
+  const bonusBlock = plan === 'desafio' ? `
+
+🎁 Seus 3 bônus (salve no celular ou imprima):
+• Guia Cão Adulto & de Abrigo: https://planopratico.shop/dogflow/bonus/bonus-cao-adulto.pdf
+• O Que Fazer Quando Ele Regride: https://planopratico.shop/dogflow/bonus/bonus-quando-regride.pdf
+• Checklist Imprimível da Semana: https://planopratico.shop/dogflow/bonus/bonus-checklist-7dias.pdf
+` : ''
   return {
     to: email,
     subject: `🐶 Seu acesso ao DogFlow — ${label}`,
@@ -45,7 +53,7 @@ Sua compra do ${label} foi confirmada. 🎉
 
 Entre com este mesmo e-mail (${email}).
 Se for seu primeiro acesso, toque em "Criar senha" na tela de login para definir sua senha.
-
+${bonusBlock}
 Bons treinos! 🐾
 Equipe DogFlow`,
   }
