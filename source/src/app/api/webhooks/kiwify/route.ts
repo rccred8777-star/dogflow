@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { randomInt } from 'crypto'
 
 // URL INTERNA do Docker (dogflow e n8n na mesma rede planopratico_net).
 // A URL pública (https://n8n.planopratico.shop) falha por hairpin NAT de dentro do container.
@@ -28,9 +29,19 @@ const PLAN_LABEL: Record<string, string> = {
   pro:      'Plano Pro',
 }
 
-// Email de boas-vindas/acesso — enviado a TODO comprador (novo ou recorrente),
-// já que o convite do Supabase só dispara para usuário inédito.
-function buildWelcomeEmail(email: string, name: string, plan: string) {
+// Senha provisória legível (sem caracteres ambíguos O/0/I/1/l).
+// Fix estrutural (casos Avi 28/06 e Lúcia 02/07): o 1º acesso não pode
+// depender de um 2º e-mail (convite/recovery) — a senha vai no boas-vindas.
+function genTempPassword(): string {
+  const chars = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789'
+  let s = ''
+  for (let i = 0; i < 6; i++) s += chars[randomInt(chars.length)]
+  return `Dog-${s}`
+}
+
+// Email de boas-vindas/acesso — enviado a TODO comprador (novo ou recorrente).
+// Se uma senha provisória foi criada, ela vai NO e-mail (login em 1 passo).
+function buildWelcomeEmail(email: string, name: string, plan: string, tempPassword: string | null) {
   const label = PLAN_LABEL[plan] ?? 'DogFlow'
   const firstName = name ? name.trim().split(/\s+/)[0] : ''
   const hi = firstName ? `Oi, ${firstName}!` : 'Oi!'
@@ -51,8 +62,12 @@ Sua compra do ${label} foi confirmada. 🎉
 
 👉 Acesse o app: ${APP_URL}
 
-Entre com este mesmo e-mail (${email}).
-Se for seu primeiro acesso, toque em "Criar senha" na tela de login para definir sua senha.
+${tempPassword ? `Seus dados de acesso (já pode entrar direto):
+E-mail: ${email}
+Senha: ${tempPassword}
+
+(Você pode trocar a senha depois, dentro do app.)` : `Entre com este mesmo e-mail (${email}) e a senha que você já usa.
+Esqueceu a senha? Toque em "Criar senha" na tela de login.`}
 ${bonusBlock}
 Bons treinos! 🐾
 Equipe DogFlow`,
@@ -142,16 +157,31 @@ export async function POST(req: NextRequest) {
       subscription_status: 'active',
     }, { onConflict: 'kiwify_order_id' })
 
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://app.planopratico.shop'
-    const { error: inviteErr } = await supabase.auth.admin.inviteUserByEmail(email, {
-      redirectTo: `${siteUrl}/criar-senha`,
-    })
-    if (inviteErr && !inviteErr.message.toLowerCase().includes('already')) {
-      console.error('invite error', inviteErr)
+    // Provisionamento SEM 2º e-mail (fix estrutural — antes: inviteUserByEmail
+    // → cliente dependia do e-mail de convite/recovery, que falhava; 3 casos reais).
+    // Novo: usuário nasce com senha provisória + e-mail confirmado, senha vai no boas-vindas.
+    // Usuário que JÁ logou alguma vez não é tocado (não sobrescrever senha em uso).
+    const { data: { users } } = await supabase.auth.admin.listUsers({ page: 1, perPage: 1000 })
+    let user = users.find(u => u.email === email)
+    let tempPassword: string | null = null
+    if (!user) {
+      tempPassword = genTempPassword()
+      const { data: created, error: createErr } = await supabase.auth.admin.createUser({
+        email,
+        password: tempPassword,
+        email_confirm: true,
+        user_metadata: name ? { full_name: name } : undefined,
+      })
+      if (createErr) { console.error('createUser error', createErr); tempPassword = null }
+      user = created?.user ?? undefined
+    } else if (!user.last_sign_in_at) {
+      tempPassword = genTempPassword()
+      const { error: updErr } = await supabase.auth.admin.updateUserById(user.id, {
+        password: tempPassword,
+        email_confirm: true,
+      })
+      if (updErr) { console.error('updateUserById error', updErr); tempPassword = null }
     }
-
-    const { data: { users } } = await supabase.auth.admin.listUsers()
-    const user = users.find(u => u.email === email)
     if (user) {
       await supabase.from('purchases').update({ user_id: user.id }).eq('kiwify_order_id', orderId)
     }
@@ -162,8 +192,8 @@ export async function POST(req: NextRequest) {
       plan,
     })
 
-    // Email de acesso para TODO comprador (o convite Supabase só vai p/ usuário inédito).
-    await forwardToN8n(N8N_EMAIL_URL, buildWelcomeEmail(email, name, plan))
+    // Email de acesso para TODO comprador — com a senha provisória quando criada.
+    await forwardToN8n(N8N_EMAIL_URL, buildWelcomeEmail(email, name, plan, tempPassword))
 
     return NextResponse.json({ ok: true })
   }
