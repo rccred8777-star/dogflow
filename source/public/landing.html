@@ -621,20 +621,12 @@
 
     <p class="subheadline">Você não quer só que ele pare. Você quer <strong style="color:#fff;">voltar a gostar do seu cachorro</strong> — sem culpa, sem raiva. O DogFlow resolve isso em 7 dias.</p>
 
-    <!-- VSL -->
-    <div style="max-width:640px;margin:0 auto 32px;border-radius:12px;overflow:hidden;">
-      <vturb-smartplayer id="vid-6a30530b1ead4fb7a53cdaf0" style="display: block; margin: 0 auto; width: 100%;"></vturb-smartplayer>
-      <script type="text/javascript">
-        var s=document.createElement("script");
-        s.src="https://scripts.converteai.net/a8afe151-e15b-4b4c-b570-59fdd67b5456/players/6a30530b1ead4fb7a53cdaf0/v4/player.js";
-        s.async=!0;
-        document.head.appendChild(s);
-      </script>
-    </div>
+    <p style="font-size:15px;color:#bbb;margin:0 auto 24px;max-width:520px;">
+      Um protocolo simples, sem punições e com tarefas de poucos minutos por dia.
+      Veja abaixo exatamente o que você recebe e comece hoje.
+    </p>
 
-    <p style="font-size:13px;color:#555;margin-bottom:28px;">Sem tempo para assistir? Leia a página completa abaixo.</p>
-
-    <a class="cta-btn price-reveal hidden" href="https://pay.kiwify.com.br/a6a8NmF" target="_blank">
+    <a class="cta-btn price-reveal" href="https://pay.kiwify.com.br/a6a8NmF" target="_blank">
       Quero resolver o xixi do meu cão em 7 dias — R$27
     </a>
     <p class="cta-sub">Acesso imediato após o pagamento · Garantia de 7 dias</p>
@@ -806,7 +798,7 @@
 
   <!-- CTA intermediário -->
   <div style="margin-top:32px;text-align:center;">
-    <a class="cta-btn price-reveal hidden" href="https://pay.kiwify.com.br/a6a8NmF" target="_blank">
+    <a class="cta-btn price-reveal" href="https://pay.kiwify.com.br/a6a8NmF" target="_blank">
       Garantir meu acesso por R$27 →
     </a>
     <p class="cta-sub">Checkout seguro · Acesso imediato · Garantia de 7 dias</p>
@@ -941,13 +933,13 @@
 
 <!-- ══════════════════════════════ PREÇO FINAL ══ -->
 <section>
-  <div class="price-box price-reveal hidden">
+  <div class="price-box price-reveal">
     <div class="section-label">Plano Prático Dog apresenta</div>
     <h2>DogFlow — <em>Xixi no Lugar Certo em 7 Dias</em></h2>
     <div class="price-tag"><small>R$</small>27</div>
     <p class="price-sub">pagamento único · acesso imediato após confirmação</p>
 
-    <a class="cta-btn price-reveal hidden" href="https://pay.kiwify.com.br/a6a8NmF" target="_blank">
+    <a class="cta-btn price-reveal" href="https://pay.kiwify.com.br/a6a8NmF" target="_blank">
       Quero resolver o xixi do meu cão em 7 dias — R$27
     </a>
     <p class="cta-sub" style="margin-top:12px;">Checkout seguro · Acesso imediato · Garantia de 7 dias</p>
@@ -998,26 +990,17 @@
     })
   }
 
-  // Timer de segurança: revela em 75s independente do vídeo
-  var timer = setTimeout(revelarPreco, 75000)
+  // O visitante pode comprar imediatamente.
+  revelarPreco()
 
-  // VTurb: escutar evento de fim de vídeo
-  window.addEventListener('message', function(e) {
-    try {
-      var data = typeof e.data === 'string' ? JSON.parse(e.data) : e.data
-      if (data && (data.event === 'ended' || data.type === 'ended' || data.action === 'ended')) {
-        clearTimeout(timer)
-        revelarPreco()
-      }
-    } catch(err) {}
+  // Preserva a origem do anúncio até o checkout.
+  const checkoutParams = new URLSearchParams()
+  ;['utm_source','utm_campaign','utm_medium','utm_content','utm_term','fbclid'].forEach(function(key) {
+    const value = params.get(key)
+    if (value) checkoutParams.set(key, value)
   })
-
-  // Fallback: se VTurb disparar via vturbEvent
-  document.addEventListener('vturbEvent', function(e) {
-    if (e.detail && e.detail.event === 'ended') {
-      clearTimeout(timer)
-      revelarPreco()
-    }
+  document.querySelectorAll('a.cta-btn[href*="pay.kiwify.com.br"]').forEach(function(link) {
+    if (checkoutParams.toString()) link.href += '?' + checkoutParams.toString()
   })
 })();
 

@@ -434,6 +434,14 @@ function irParaLanding() {
     perfil: window._perfil || 'habito',
     diag: window._diagnostico || 'Hábito incorreto instalado'
   })
+  const origem = new URLSearchParams(window.location.search)
+  ;['utm_source','utm_campaign','utm_medium','utm_content','utm_term','fbclid'].forEach(function(key) {
+    const value = origem.get(key)
+    if (value) params.set(key, value)
+  })
+  if (window.fbq) fbq('trackCustom', 'QuizConcluido', {
+    perfil: window._perfil || 'habito'
+  })
   window.location.href = '/landing.html?' + params.toString()
 }
 </script>
